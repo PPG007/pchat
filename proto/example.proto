@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package example;
+
+option go_package="./pb";
+
+// 枚举类型定义
+enum ExampleEnum {
+  UNKNOWN = 0;
+  STARTED = 1;
+  FINISHED = 2;
+}
+
+// Message 定义
+message ExampleMessage {
+  int32 id = 1;
+  string name = 2;
+  map<string, int32> scores = 3;
+  ExampleEnum status = 4;
+}
