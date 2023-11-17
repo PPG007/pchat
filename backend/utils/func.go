@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"pchat/repository/bson"
 )
 
@@ -54,4 +56,13 @@ func StrArrToObjectIds(ids []string) []bson.ObjectId {
 		result = append(result, bson.NewObjectIdFromHex(id))
 	}
 	return result
+}
+
+func GenerateRandomSecretKey(length int) (string, error) {
+	randomBytes := make([]byte, length)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(randomBytes), nil
 }
