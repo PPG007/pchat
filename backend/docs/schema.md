@@ -51,3 +51,47 @@
   }
 }
 ```
+
+## permission
+
+```json5
+{
+  _id: "ObjectId",
+  // 资源名称
+  name: "String"
+}
+```
+
+## role
+
+```json5
+{
+  _id: "ObjectId",
+  // 权限名称集合
+  permissions: "[permission.name]"
+}
+```
+
+## user
+
+```json5
+{
+  _id: "ObjectId",
+  // 昵称
+  name: "String",
+  // 密码
+  password: "String",
+  // 邮箱
+  email: "String",
+  // 角色列表
+  roles: "[role._id]",
+  createdAt: "Date",
+  updatedAt: "Date",
+  // 状态，blocked、activated、auditing
+  status: "String",
+  // 头像
+  avatar: "String",
+  // 在线状态，online、offline、leaving、busy
+  chatStatus: "String"
+}
+```
