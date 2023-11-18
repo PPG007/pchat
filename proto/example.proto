@@ -18,3 +18,11 @@ message ExampleMessage {
   map<string, int32> scores = 3;
   ExampleEnum status = 4;
 }
+
+message DemoRequest {
+  string value = 1; // @gotags: form:"value"
+}
+
+message DemoResponse {
+  string value = 2;
+}
