@@ -90,3 +90,10 @@ func (u *User) Activate(ctx context.Context) error {
 	err := repository.FindAndApply(ctx, C_USER, condition, change, u)
 	return err
 }
+
+func (*User) UpdateById(ctx context.Context, id bson.ObjectId, updater bson.M) error {
+	condition := bson.M{
+		"_id": id,
+	}
+	return repository.UpdateOne(ctx, C_USER, condition, updater)
+}

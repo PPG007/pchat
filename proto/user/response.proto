@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pchat.user;
 
-option go_package = "./user";
+option go_package = "pchat/pb/user";
 
 message LoginResponse {
   string token = 1;

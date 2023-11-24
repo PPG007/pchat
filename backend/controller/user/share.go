@@ -7,4 +7,5 @@ func RegisterRoutes(e *gin.Engine) {
 	group.POST("/login", LoginController)
 	group.POST("/register", RegisterController)
 	group.POST("/approve", ApproveRegisterController)
+	group.PUT("/:id", UpdateProfileController)
 }

@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package pchat.user;
 
-option go_package = "./user";
+option go_package = "pchat/pb/user";
+
+import "common/types.proto";
 
 message LoginRequest {
   string email = 1; // @gotags: valid:"required"
@@ -16,4 +18,14 @@ message RegisterRequest {
 
 message ApproveRegisterRequest {
   string email = 1; // @gotags: valid:"required"
+}
+
+message UpdateProfileRequest {
+  pchat.common.StringValue avatar = 2;
+  pchat.common.StringValue password = 3;
+  pchat.common.StringValue name = 4;
+}
+
+message UpdateEmailRequest {
+  string email = 1;
 }

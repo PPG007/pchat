@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"github.com/gin-gonic/gin"
 	"pchat/repository/bson"
 )
 
@@ -70,4 +72,15 @@ func GenerateRandomSecretKey(length int) (string, error) {
 func ParseSecretString(key string) []byte {
 	byteKey, _ := hex.DecodeString(key)
 	return byteKey
+}
+
+const (
+	USER_ID_HEADER = "X-User-Id"
+)
+
+func GetUserId(ctx context.Context) string {
+	if ginCtx, ok := ctx.(*gin.Context); ok {
+		return ginCtx.GetHeader(USER_ID_HEADER)
+	}
+	return ""
 }
