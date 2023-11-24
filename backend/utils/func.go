@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"github.com/gin-gonic/gin"
 	"pchat/repository/bson"
+	"time"
 )
 
 func StrInArray(str string, arr *[]string) bool {
@@ -83,4 +84,12 @@ func GetUserId(ctx context.Context) string {
 		return ginCtx.GetHeader(USER_ID_HEADER)
 	}
 	return ""
+}
+
+func GetFirstDayInYear(arg time.Time) time.Time {
+	return time.Date(arg.Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+}
+
+func GetLastDayInYear(arg time.Time) time.Time {
+	return time.Date(arg.Year()+1, time.January, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, -1)
 }

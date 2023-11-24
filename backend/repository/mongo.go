@@ -81,3 +81,8 @@ func FindAllWithPage(ctx context.Context, collection string, sorter []string, pa
 	}
 	return col.Find(ctx, condition).Count()
 }
+
+func Upsert(ctx context.Context, collection string, condition, updater bson.M) error {
+	_, err := mongoClient.Database.Collection(collection).Upsert(ctx, condition, updater)
+	return err
+}

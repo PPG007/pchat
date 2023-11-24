@@ -95,3 +95,14 @@
   chatStatus: "String"
 }
 ```
+
+## chinaHoliday
+
+```json5
+{
+  _id: "ObjectId",
+  date: "Date",
+  dateStr: "String",
+  isWorkingDay: "Boolean"
+}
+```

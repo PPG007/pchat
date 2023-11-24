@@ -6,6 +6,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"pchat/controller"
+	"pchat/cron"
 	"pchat/middleware"
 )
 
@@ -19,6 +20,7 @@ var (
 func main() {
 	loadConfig()
 	InitDefaultResources()
+	cron.Start()
 	startGin()
 }
 
