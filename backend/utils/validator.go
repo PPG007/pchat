@@ -4,6 +4,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/spf13/cast"
 	"pchat/repository/bson"
+	"reflect"
 )
 
 func init() {
@@ -22,6 +23,10 @@ func init() {
 }
 
 func ValidateRequest(req any) error {
-	_, err := govalidator.ValidateStruct(req)
+	v := req
+	if rv := reflect.ValueOf(req); rv.Kind() == reflect.Ptr {
+		v = rv.Elem().Interface()
+	}
+	_, err := govalidator.ValidateStruct(v)
 	return err
 }

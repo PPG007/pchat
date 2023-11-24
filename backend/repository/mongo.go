@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/qiniu/qmgo"
 	"github.com/qiniu/qmgo/options"
-	"github.com/spf13/viper"
+	"os"
 	"pchat/repository/bson"
 )
 
@@ -13,8 +13,8 @@ var mongoClient *qmgo.QmgoClient
 func init() {
 	ctx := context.Background()
 	client, err := qmgo.Open(ctx, &qmgo.Config{
-		Uri:      viper.GetString("mongo.uri"),
-		Database: viper.GetString("mongo.database"),
+		Uri:      os.Getenv("MONGO_URI"),
+		Database: os.Getenv("MONGO_DATABASE"),
 	})
 	if err != nil {
 		panic(err)

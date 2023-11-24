@@ -1,11 +1,18 @@
 package middleware
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"pchat/utils/log"
+)
 
 var (
 	permissionMap = make(map[string]string)
 )
 
 func accessCheck(ctx *gin.Context) {
+	// TODO:
+	log.Info(ctx, "access check", log.Fields{
+		"userId": ctx.GetHeader(USER_ID_HEADER),
+	})
 	ctx.Next()
 }

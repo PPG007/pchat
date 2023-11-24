@@ -2,7 +2,7 @@ package utils
 
 import (
 	"crypto/rand"
-	"encoding/base64"
+	"encoding/hex"
 	"pchat/repository/bson"
 )
 
@@ -64,5 +64,10 @@ func GenerateRandomSecretKey(length int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return base64.StdEncoding.EncodeToString(randomBytes), nil
+	return hex.EncodeToString(randomBytes), nil
+}
+
+func ParseSecretString(key string) []byte {
+	byteKey, _ := hex.DecodeString(key)
+	return byteKey
 }

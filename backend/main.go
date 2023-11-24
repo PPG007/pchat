@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"os"
 	"pchat/controller"
 	"pchat/middleware"
 )
@@ -19,16 +18,11 @@ var (
 
 func main() {
 	loadConfig()
+	InitDefaultResources()
 	startGin()
 }
 
 func loadConfig() {
-	mongoUri := os.Getenv("MONGO_URI")
-	mongoDatabase := os.Getenv("MONGO_DATABASE")
-	viper.Set("mongo", map[string]string{
-		"uri":      mongoUri,
-		"database": mongoDatabase,
-	})
 	viper.BindPFlag("httpHost", flag.Lookup("httpHost"))
 	viper.BindPFlag("httpPort", flag.Lookup("httpPort"))
 	viper.BindPFlag("wsHost", flag.Lookup("wsHost"))

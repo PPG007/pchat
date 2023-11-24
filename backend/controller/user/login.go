@@ -6,7 +6,6 @@ import (
 	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_user "pchat/pb/user"
-	"pchat/utils"
 )
 
 func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse, error) {
@@ -18,7 +17,7 @@ func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse,
 	if err != nil {
 		return nil, err
 	}
-	token, err := utils.SignToken(ctx, user)
+	token, err := model.SignToken(ctx, user)
 	if err != nil {
 		return nil, err
 	}
