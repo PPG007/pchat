@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package pchat.user;
+
+option go_package = "./user";
+
+message LoginResponse {
+  string token = 1;
+}
+
+message RegisterResponse {
+  bool needAudit = 1;
+}

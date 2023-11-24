@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+package pchat.common;
+
+option go_package = "./common";

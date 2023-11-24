@@ -1,9 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"github.com/gin-gonic/gin"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"os"
+	"pchat/controller"
+	"pchat/middleware"
 )
 
 var (
@@ -15,6 +19,7 @@ var (
 
 func main() {
 	loadConfig()
+	startGin()
 }
 
 func loadConfig() {
@@ -30,4 +35,11 @@ func loadConfig() {
 	viper.BindPFlag("wsPort", flag.Lookup("wsPort"))
 	flag.Parse()
 	viper.MergeInConfig()
+}
+
+func startGin() {
+	e := gin.New()
+	middleware.RegisterMiddlewares(e)
+	controller.RegisterControllers(e)
+	e.Run(fmt.Sprintf("%s:%d", viper.GetString("httpHost"), viper.GetInt("httpPort")))
 }

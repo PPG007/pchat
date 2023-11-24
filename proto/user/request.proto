@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pchat.user;
+
+option go_package = "./user";
+
+message LoginRequest {
+  string email = 1; // @gotags: valid:"required"
+  string password = 2; // @gotags: valid:"required"
+}
+
+message RegisterRequest {
+  string email = 1; // @gotags: valid:"required"
+  string password = 2; // @gotags: valid:"required"
+}
+
+message ApproveRegisterRequest {
+  string email = 1; // @gotags: valid:"required"
+}
