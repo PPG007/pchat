@@ -106,3 +106,102 @@
   isWorkingDay: "Boolean"
 }
 ```
+
+## chat
+
+```json5
+{
+  _id: "ObjectId",
+  isDeleted: "Boolean",
+  createdAt: "Date",
+  // 群聊：group，私聊：direct
+  type: "String",
+  // 聊天成员
+  members: ["ObjectId"],
+  // 群头像
+  avatar: "String",
+  // 是否非公开
+  isPrivate: "Boolean",
+  lastMessage: {
+    id: "ObjectId",
+    createdAt: "Date",
+    sender: "ObjectId",
+    content: "String"
+  }
+}
+```
+
+## message
+
+```json5
+{
+  _id: "ObjectId",
+  createdAt: "Date",
+  isDeleted: "Boolean",
+  // 消息发送者
+  sender: "ObjectId",
+  // 如果此消息是对某个消息的回复，那么此字段值为被回复消息的 id
+  replyTo: "ObjectId",
+  // 是否被编辑过
+  hasBeenEdited: "Boolean",
+  // 如果是讨论串消息，那么此字段值为讨论串 id
+  threadId: "ObjectId",
+  // 当前消息是否在讨论串内
+  isInThread: "Boolean",
+  // isInThread 为 true 时，此字段表示是否将消息显示在外部消息中
+  showThreadInChat: "Boolean",
+  // 对消息的 emoji 回应
+  responseEmojis: ["String"],
+  // 文本：text，文件：file
+  type: "String",
+  // 正文，如果是文件那么就是文件名
+  content: "String",
+  // 文件的 url
+  fileUrl: "String",
+  // 被提及的人
+  mentionedUsers: ["ObjectId"]
+}
+```
+
+## readStats
+
+```json5
+// 消息阅读状态
+{
+  _id: "ObjectId",
+  messageId: "ObjectId",
+  userId: "ObjectId",
+  createdAt: "Date"
+}
+```
+
+## userFavorChat
+
+```json5
+{
+  _id: "ObjectId",
+  chatId: "ObjectId",
+  userId: "ObjectId"
+}
+```
+
+## userUnreadMessage
+
+```json5
+{
+  _id: "ObjectId",
+  messageId: "ObjectId",
+  chatId: "ObjectId",
+  userId: "ObjectId",
+}
+```
+
+## userSubscribedThread
+
+```json5
+{
+  _id: "ObjectId",
+  chatId: "ObjectId",
+  threadId: "ObjectId",
+}
+```
