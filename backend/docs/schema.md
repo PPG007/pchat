@@ -138,6 +138,7 @@
   _id: "ObjectId",
   createdAt: "Date",
   isDeleted: "Boolean",
+  chatId: "ObjectId",
   // 消息发送者
   sender: "ObjectId",
   // 如果此消息是对某个消息的回复，那么此字段值为被回复消息的 id

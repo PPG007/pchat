@@ -83,7 +83,14 @@ func GetUserId(ctx context.Context) string {
 	if ginCtx, ok := ctx.(*gin.Context); ok {
 		return ginCtx.GetHeader(USER_ID_HEADER)
 	}
+	if userId, ok := ctx.Value(USER_ID_HEADER).(string); ok {
+		return userId
+	}
 	return ""
+}
+
+func GetUserIdAsObjectId(ctx context.Context) bson.ObjectId {
+	return bson.NewObjectIdFromHex(GetUserId(ctx))
 }
 
 func GetFirstDayInYear(arg time.Time) time.Time {

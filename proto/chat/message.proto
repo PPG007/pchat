@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package pchat.chat;
+
+option go_package = "pchat/pb/chat";
+
+message NewMessage {
+  string id = 1;
+  string replyTo = 2;
+  string threadId = 3;
+  bool isInThread = 4;
+  bool showThreadInChat = 5;
+  string type = 6;
+  string content = 7;
+  string fileUrl = 8;
+  repeated string mentionedUsers = 9;
+  string chatId = 10;
+}
+
+message MessageDetail {
+  string id = 1;
+  string replyTo = 2;
+  string threadId = 3;
+  bool isInThread = 4;
+  bool showThreadInChat = 5;
+  string type = 6;
+  string content = 7;
+  string fileUrl = 8;
+  repeated string mentionedUsers = 9;
+  string chatId = 10;
+  string createdAt = 11;
+  bool hasBeenEdited = 12;
+  repeated string responseEmojis = 13;
+}

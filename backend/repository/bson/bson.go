@@ -10,7 +10,7 @@ type M = primitive.M
 
 type ObjectId = primitive.ObjectID
 
-var NilObjectId = NewObjectIdFromHex("000000000000000000000000")
+var NilObjectId = primitive.NilObjectID
 
 func IsObjectIdEqual(a, b ObjectId) bool {
 	return a.Hex() == b.Hex()

@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"pchat/repository"
 	"pchat/repository/bson"
+	"pchat/utils"
 	"time"
 )
 
@@ -96,4 +97,37 @@ func (*User) UpdateById(ctx context.Context, id bson.ObjectId, updater bson.M) e
 		"_id": id,
 	}
 	return repository.UpdateOne(ctx, C_USER, condition, updater)
+}
+
+func (*User) Online(ctx context.Context) (User, error) {
+	condition := bson.M{
+		"_id": utils.GetUserIdAsObjectId(ctx),
+	}
+	change := qmgo.Change{
+		Update: bson.M{
+			"$set": bson.M{
+				"chatStatus": USER_CHAT_STATUS_ONLINE,
+			},
+		},
+		ReturnNew: true,
+	}
+	user := User{}
+	err := repository.FindAndApply(ctx, C_USER, condition, change, &user)
+	return user, err
+}
+
+func (*User) Offline(ctx context.Context) (User, error) {
+	condition := bson.M{
+		"_id": utils.GetUserIdAsObjectId(ctx),
+	}
+	change := qmgo.Change{
+		Update: bson.M{
+			"$set": bson.M{
+				"chatStatus": USER_CHAT_STATUS_OFFLINE,
+			},
+		},
+	}
+	user := User{}
+	err := repository.FindAndApply(ctx, C_USER, condition, change, &user)
+	return user, err
 }

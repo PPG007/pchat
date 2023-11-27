@@ -15,6 +15,9 @@ var (
 			if !ok {
 				return fromValue, nil
 			}
+			if oid.IsZero() {
+				return reflect.ValueOf(""), nil
+			}
 			return reflect.ValueOf(oid.Hex()), nil
 		},
 	}
@@ -25,6 +28,9 @@ var (
 			id, ok := fromValue.Interface().(string)
 			if !ok {
 				return fromValue, nil
+			}
+			if id == "" {
+				return reflect.ValueOf(bson.NilObjectId), nil
 			}
 			return reflect.ValueOf(bson.NewObjectIdFromHex(id)), nil
 		},
