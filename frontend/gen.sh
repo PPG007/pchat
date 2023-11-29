@@ -3,7 +3,7 @@
 OUT_DIR="./src/pb"
 SRC_DIR="../proto"
 
-rm -rf ${OUT_DIR}/*.ts
+rm -rf ${OUT_DIR}/**/*.ts
 
 protoc \
   --plugin=./node_modules/.bin/protoc-gen-ts_proto \
@@ -12,4 +12,4 @@ protoc \
   --ts_proto_opt=importSuffix=.js \
   --proto_path="${SRC_DIR}" \
   -I ${SRC_DIR} \
-  ${SRC_DIR}/*.proto
+  ${SRC_DIR}/**/*.proto
