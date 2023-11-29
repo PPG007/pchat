@@ -1,10 +1,10 @@
-import { Button } from "antd";
 import { Fragment } from 'react'
+import { Login } from "./pages";
 
 function App() {
   return (
     <Fragment>
-      <Button danger>click</Button>
+      <Login/>
     </Fragment>
   )
 }

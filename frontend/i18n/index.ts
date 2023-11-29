@@ -18,11 +18,10 @@ const initOption: InitOptions = {
     escapeValue: false,
   },
 }
-const init = () => {
-  i18n
-    .use(I18nextBrowserLanguageDetector)
-    .use(initReactI18next)
-    .init(initOption);
-}
 
-export default init;
+i18n
+  .use(I18nextBrowserLanguageDetector)
+  .use(initReactI18next)
+  .init(initOption);
+
+export default i18n;
