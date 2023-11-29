@@ -4,10 +4,8 @@ import { initReactI18next } from "react-i18next";
 import en_us from "./locales/en_us.ts";
 import zh_cn from "./locales/zh_cn.ts";
 
-const debug = process.env.isLocal;
-
 const initOption: InitOptions = {
-  debug: !!debug,
+  debug: process.env.NODE_ENV === 'development',
   resources: {
     zh: {
       translation: zh_cn,
