@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import i18n from "../../i18n";
+import { getTokenFromCookie } from "../utils";
 
 const axiosInstance = axios.create({
   timeout: 3000,
@@ -13,5 +14,14 @@ axiosInstance.interceptors.response.use((resp) => resp, (err) => {
     return Promise.reject(i18n.t('errorMessage.network'));
   }
   return Promise.reject(err);
+})
+
+
+axiosInstance.interceptors.request.use((config) => {
+  const token = getTokenFromCookie();
+  if (token) {
+    config.headers['X-Access-Token'] = token;
+  }
+  return config;
 })
 export default axiosInstance;

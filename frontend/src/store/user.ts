@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
+import {setTokenToCookie, getTokenFromCookie} from "../utils";
 
 interface UserState {
   token?: string;
@@ -17,19 +17,19 @@ type UserReducer = {
   login: (state: UserState, action: PayloadAction<LoginPayload>) => void;
 }
 
-const accessTokenCookieKey = 'accessToken';
+
 
 const userSlice = createSlice<UserState, UserReducer, 'user'>({
   name: 'user',
   reducers: {
     login: (state, action) => {
       state.token = action.payload.token;
-      Cookies.set(accessTokenCookieKey, action.payload.token)
+      setTokenToCookie(action.payload.token);
     }
   },
   initialState: () => {
     return {
-      token: Cookies.get(accessTokenCookieKey),
+      token: getTokenFromCookie(),
     }
   }
 })
