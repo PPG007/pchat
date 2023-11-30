@@ -1,11 +1,14 @@
 package user
 
 import (
+	"github.com/PPG007/copier"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_user "pchat/pb/user"
+	"pchat/repository/bson"
+	"pchat/utils"
 )
 
 func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse, error) {
@@ -21,9 +24,21 @@ func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse,
 	if err != nil {
 		return nil, err
 	}
-	return &pb_user.LoginResponse{
-		Token: token,
-	}, nil
+	resp := &pb_user.LoginResponse{}
+	resp.Token = token
+	utils.Copier().RegisterDiffPairs([]copier.DiffPair{
+		{
+			Origin: "Roles",
+			Target: []string{"Permissions"},
+		},
+	}).RegisterTransformer("Permissions", func(roles []bson.ObjectId) []string {
+		permissions, err := model.CRole.GetPermissionsByIds(ctx, roles)
+		if err != nil {
+			return nil
+		}
+		return permissions
+	}).From(user).To(resp)
+	return resp, nil
 }
 
 var LoginController = c_utils.NewGinController[*pb_user.LoginRequest, *pb_user.LoginResponse](login)

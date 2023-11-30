@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { LoginWithCaptcha, LoginWithPassword, LoginWithQRCode } from "../components";
 import { LoginProps } from "../components/props.ts";
+import { LoginResponse } from "../pb/user/response.ts";
 import { Dispatch, login } from "../store";
 import styles from './styles/login.module.less';
 const Login: FC = () => {
@@ -13,8 +14,9 @@ const Login: FC = () => {
   const [tab, setTab] = useState('password');
   const [isLoading, setIsLoading] = useState(false);
   const {message} = App.useApp();
-  const onLogin = (token: string) => {
-    dispatch(login({token}));
+  const onLogin = (resp: LoginResponse) => {
+    dispatch(login({token: resp.token}));
+    console.log(resp.avatar);
     setIsLoading(false);
   }
   const onFailure = (m: string) => {

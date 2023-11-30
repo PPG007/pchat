@@ -6,6 +6,11 @@ option go_package = "pchat/pb/user";
 
 message LoginResponse {
   string token = 1;
+  string id = 2;
+  string name = 3;
+  repeated string permissions = 4;
+  string email = 5;
+  string avatar = 6;
 }
 
 message RegisterResponse {

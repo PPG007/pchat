@@ -16,7 +16,7 @@ const LoginWithPassword: FC<LoginProps> = ({onSuccess, onLoading, onFailure}) =>
     onLoading();
     try {
       const resp = await User.loginWithPassword(req)
-      onSuccess(resp.data.token);
+      onSuccess(resp.data);
     } catch (e) {
       onFailure(getMessage(e, t('errorMessage.login')));
     }
