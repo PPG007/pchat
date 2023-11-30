@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	pb_common "pchat/pb/common"
 	"pchat/utils/log"
 	"runtime"
 )
@@ -17,7 +18,9 @@ func recovery(ctx *gin.Context) {
 			log.ErrorTrace(ctx, "Uncaught panic", log.Fields{
 				"error": err,
 			}, stack)
-			ctx.JSON(http.StatusInternalServerError, ResponseErrorMessage(err))
+			ctx.JSON(http.StatusInternalServerError, pb_common.ErrorResponse{
+				Message: err,
+			})
 		}
 	}()
 	ctx.Next()

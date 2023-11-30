@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
-import { Login } from "./pages";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
     <Fragment>
-      <Login/>
+      <Outlet/>
     </Fragment>
   )
 }

@@ -2,15 +2,24 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
+import { User } from "../engine";
 import { LoginRequest } from "../pb/user/request.ts";
+import { getMessage } from "../utils";
 import { validateMessage } from "../utils/validator.ts";
+import { LoginProps } from "./props.ts";
 
-const LoginWithPassword: FC = () => {
+const LoginWithPassword: FC<LoginProps> = ({onSuccess, onLoading, onFailure}) => {
   const [form] = Form.useForm<LoginRequest>()
   const { t } = useTranslation();
   const onSubmit = async () => {
-    const result = await form.validateFields()
-    console.log(result);
+    const req = await form.validateFields()
+    onLoading();
+    try {
+      const resp = await User.loginWithPassword(req)
+      onSuccess(resp.data.token);
+    } catch (e) {
+      onFailure(getMessage(e, t('errorMessage.login')));
+    }
   }
   return (
     <Form
@@ -39,8 +48,13 @@ const LoginWithPassword: FC = () => {
           prefix={<LockOutlined/>}
         />
       </Form.Item>
-      <Form.Item>
-        <Button type={'primary'} htmlType={'submit'} style={{width: '100%'}}>
+      <Form.Item wrapperCol={{span: 16, offset: 4}}>
+        <Button
+          type={'primary'}
+          htmlType={'submit'}
+          style={{width: '100%'}}
+          size={'large'}
+        >
           {
             t('login')
           }
