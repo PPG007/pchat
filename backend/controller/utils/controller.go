@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/joncalhoun/qson"
 	"google.golang.org/protobuf/proto"
 	"net/http"
 	pb_common "pchat/pb/common"
@@ -17,7 +19,8 @@ func NewGinController[Request, Response proto.Message](fn Handler[Request, Respo
 		req := new(Request)
 		var err error
 		if ctx.Request.Method == http.MethodGet {
-			err = ctx.ShouldBindQuery(req)
+			b, _ := qson.ToJSON(ctx.Request.URL.RawQuery)
+			err = json.Unmarshal(b, req)
 		} else {
 			err = ctx.ShouldBindJSON(req)
 		}

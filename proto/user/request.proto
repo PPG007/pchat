@@ -4,6 +4,7 @@ package pchat.user;
 
 option go_package = "pchat/pb/user";
 
+import "common/request.proto";
 import "common/types.proto";
 
 message LoginRequest {
@@ -14,10 +15,13 @@ message LoginRequest {
 message RegisterRequest {
   string email = 1; // @gotags: valid:"required"
   string password = 2; // @gotags: valid:"required"
+  string reason = 3;
 }
 
-message ApproveRegisterRequest {
-  string email = 1; // @gotags: valid:"required"
+message AuditRegisterApplicationRequest {
+  repeated string ids = 1; // @gotags: valid:"required,objectIdList"
+  string rejectReason = 2;
+  bool isApproved = 3;
 }
 
 message UpdateProfileRequest {
@@ -28,4 +32,23 @@ message UpdateProfileRequest {
 
 message UpdateEmailRequest {
   string email = 1;
+}
+
+message ListRegisterApplicationRequest {
+  pchat.common.ListCondition listCondition = 1;
+  repeated string status = 2; // @gotags: valid:"in(approved|rejected|pending)"
+}
+
+message ListRegisterApplicationResponse {
+  int64 total = 1;
+  repeated RegisterApplicationDetail items = 2;
+}
+
+message RegisterApplicationDetail {
+  string id = 1;
+  string email = 2;
+  string status = 3;
+  string createdAt = 4;
+  string reason = 5;
+  string rejectReason = 6;
 }

@@ -5,6 +5,8 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"github.com/gin-gonic/gin"
+	pb_common "pchat/pb/common"
+	"pchat/repository"
 	"pchat/repository/bson"
 	"time"
 )
@@ -99,4 +101,30 @@ func GetFirstDayInYear(arg time.Time) time.Time {
 
 func GetLastDayInYear(arg time.Time) time.Time {
 	return time.Date(arg.Year()+1, time.January, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, -1)
+}
+
+func FormatListCondition(listCondition *pb_common.ListCondition) *pb_common.ListCondition {
+	if listCondition == nil {
+		listCondition = &pb_common.ListCondition{}
+	}
+	if listCondition.Page == 0 {
+		listCondition.Page = 1
+	}
+	if listCondition.PerPage == 0 {
+		listCondition.PerPage = 10
+	}
+	if len(listCondition.OrderBy) == 0 {
+		listCondition.OrderBy = []string{"-createdAt"}
+	}
+	return listCondition
+}
+
+func FormatPagination(condition bson.M, listCondition *pb_common.ListCondition) repository.Pagination {
+	listCondition = FormatListCondition(listCondition)
+	return repository.Pagination{
+		Condition: condition,
+		Page:      listCondition.Page,
+		PerPage:   listCondition.PerPage,
+		OrderBy:   listCondition.OrderBy,
+	}
 }

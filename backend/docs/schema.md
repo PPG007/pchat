@@ -206,3 +206,19 @@
   threadId: "ObjectId",
 }
 ```
+
+## registerApplication
+
+```json5
+{
+  _id: "ObjectId",
+  createdAt: "Date",
+  reason: "String",
+  // 状态：rejected（拒绝），approved（同意），pending（等待）
+  status: "String",
+  rejectReason: "String",
+  updatedAt: "Date",
+  email: "String",
+  userId: "ObjectId"
+}
+```

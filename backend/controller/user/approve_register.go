@@ -1,27 +1,27 @@
 package user
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
-	"pchat/controller/utils"
+	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
+	"pchat/utils"
 )
 
-func approveRegister(ctx *gin.Context, req *pb_user.ApproveRegisterRequest) (*pb_common.EmptyResponse, error) {
-	user, err := model.CUser.GetByEmail(ctx, req.Email, false)
-	if err != nil {
-		return nil, err
+func approveRegister(ctx *gin.Context, req *pb_user.AuditRegisterApplicationRequest) (*pb_common.EmptyResponse, error) {
+	if !req.IsApproved {
+		err := model.CRegisterApplication.Reject(ctx, utils.StrArrToObjectIds(req.Ids), req.RejectReason)
+		if err != nil {
+			return nil, err
+		}
+		return &pb_common.EmptyResponse{}, nil
 	}
-	if user.Status != model.USER_STATUS_AUDITING {
-		return nil, errors.New("user don't need approve")
-	}
-	err = user.Activate(ctx)
+	err := model.CRegisterApplication.Approve(ctx, utils.StrArrToObjectIds(req.Ids))
 	if err != nil {
 		return nil, err
 	}
 	return &pb_common.EmptyResponse{}, nil
 }
 
-var ApproveRegisterController = utils.NewGinController[*pb_user.ApproveRegisterRequest, *pb_common.EmptyResponse](approveRegister)
+var ApproveRegisterController = c_utils.NewGinController[*pb_user.AuditRegisterApplicationRequest, *pb_common.EmptyResponse](approveRegister)

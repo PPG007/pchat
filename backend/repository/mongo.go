@@ -33,6 +33,13 @@ func Insert(ctx context.Context, collection string, docs ...interface{}) error {
 	return err
 }
 
+type Pagination struct {
+	Condition bson.M
+	Page      int64
+	PerPage   int64
+	OrderBy   []string
+}
+
 func UpdateOne(ctx context.Context, collection string, condition bson.M, updater bson.M) error {
 	return mongoClient.Database.Collection(collection).UpdateOne(ctx, condition, updater)
 }
@@ -73,13 +80,17 @@ func FindAllWithSorter(ctx context.Context, collection string, sorter []string, 
 	return mongoClient.Database.Collection(collection).Find(ctx, condition).Sort(sorter...).All(result)
 }
 
-func FindAllWithPage(ctx context.Context, collection string, sorter []string, page, perPage int64, condition bson.M, result interface{}) (int64, error) {
+func FindAllWithPage(ctx context.Context, collection string, pagination Pagination, result interface{}) (int64, error) {
 	col := mongoClient.Database.Collection(collection)
-	err := col.Find(ctx, condition).Sort(sorter...).Skip((page - 1) * perPage).Limit(perPage).All(result)
+	err := col.Find(ctx, pagination.Condition).
+		Sort(pagination.OrderBy...).
+		Skip((pagination.Page - 1) * pagination.PerPage).
+		Limit(pagination.PerPage).
+		All(result)
 	if err != nil {
 		return 0, err
 	}
-	return col.Find(ctx, condition).Count()
+	return col.Find(ctx, pagination.Condition).Count()
 }
 
 func Upsert(ctx context.Context, collection string, condition, updater bson.M) error {

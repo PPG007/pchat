@@ -3,3 +3,9 @@ syntax = "proto3";
 package pchat.common;
 
 option go_package = "pchat/pb/common";
+
+message ListCondition {
+  int64 page = 1;
+  int64 perPage = 2;
+  repeated string orderBy = 3;
+}

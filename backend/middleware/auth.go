@@ -12,6 +12,7 @@ var (
 	noAuthPaths = []string{
 		"/users/login",
 		"/users/register",
+		"/users/registerApplications",
 	}
 )
 

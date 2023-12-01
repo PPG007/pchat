@@ -52,7 +52,7 @@ func (*User) GetByEmail(ctx context.Context, email string, onlyActivated bool) (
 	return user, err
 }
 
-func (*User) CreateNew(ctx context.Context, email, password string, needAudit bool) error {
+func (*User) CreateNew(ctx context.Context, email, password, reason string, needAudit bool) error {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -73,23 +73,14 @@ func (*User) CreateNew(ctx context.Context, email, password string, needAudit bo
 			return USER_STATUS_ACTIVATED
 		}(),
 	}
-	return repository.Insert(ctx, C_USER, user)
-}
-
-func (u *User) Activate(ctx context.Context) error {
-	condition := bson.M{
-		"_id": u.Id,
+	err = repository.Insert(ctx, C_USER, user)
+	if err != nil {
+		return err
 	}
-	change := qmgo.Change{
-		Update: bson.M{
-			"$set": bson.M{
-				"status":    USER_STATUS_ACTIVATED,
-				"updatedAt": time.Now(),
-			},
-		},
+	if needAudit {
+		return CRegisterApplication.Upsert(ctx, user, reason)
 	}
-	err := repository.FindAndApply(ctx, C_USER, condition, change, u)
-	return err
+	return nil
 }
 
 func (*User) UpdateById(ctx context.Context, id bson.ObjectId, updater bson.M) error {
@@ -130,4 +121,24 @@ func (*User) Offline(ctx context.Context) (User, error) {
 	user := User{}
 	err := repository.FindAndApply(ctx, C_USER, condition, change, &user)
 	return user, err
+}
+
+func (*User) Activate(ctx context.Context, ids []bson.ObjectId) error {
+	condition := bson.M{
+		"_id": bson.M{
+			"$in": ids,
+		},
+		"status": bson.M{
+			"$in": []string{USER_STATUS_BLOCKED, USER_STATUS_AUDITING},
+		},
+	}
+	updater := bson.M{
+		"$set": bson.M{
+			"updatedAt": time.Now(),
+			"status":    USER_STATUS_ACTIVATED,
+		},
+	}
+	_, err := repository.UpdateAll(ctx, C_USER, condition, updater)
+	// TODO: send notification
+	return err
 }

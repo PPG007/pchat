@@ -21,7 +21,7 @@ func register(ctx *gin.Context, req *pb_user.RegisterRequest) (*pb_user.Register
 	if err != nil {
 		return nil, err
 	}
-	err = model.CUser.CreateNew(ctx, req.Email, req.Password, setting.ChatSetting.MustBeApprovedBeforeRegister)
+	err = model.CUser.CreateNew(ctx, req.Email, req.Password, req.Reason, setting.ChatSetting.MustBeApprovedBeforeRegister)
 	if err != nil {
 		return nil, err
 	}
