@@ -17,6 +17,13 @@ const zh_cn = {
     network: '网络异常',
   },
   getCaptcha: '获取验证码',
+  registerApplication: {
+    email: '邮箱',
+    status: '状态',
+    reason: '申请理由',
+    rejectReason: '拒绝原因',
+    createdAt: '申请时间',
+  },
 }
 
 export default zh_cn;

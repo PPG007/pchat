@@ -17,6 +17,13 @@ const en_us = {
     network: 'Network error',
   },
   getCaptcha: 'Get captcha code.',
+  registerApplication: {
+    email: 'Email',
+    status: 'Application status',
+    reason: 'Reason of application',
+    rejectReason: 'Reason of rejection',
+    createdAt: 'Apply time',
+  },
 }
 
 export default en_us;

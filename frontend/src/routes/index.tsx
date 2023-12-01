@@ -1,6 +1,6 @@
 import { createHashRouter } from "react-router-dom";
 import App from "../App.tsx";
-import { Login } from "../pages";
+import { RegisterApplication } from "../components";
 
 const router = createHashRouter([
   {
@@ -8,7 +8,7 @@ const router = createHashRouter([
     element: <App/>,
     children: [
       {
-        element: <Login/>,
+        element: <RegisterApplication/>,
         index: true,
       }
     ]
