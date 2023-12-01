@@ -1,4 +1,4 @@
 .idea
-backend/pb/*.pb.go
-frontend/src/pb/*.ts
+backend/pb/**/*.pb.go
+frontend/src/pb/**/*.ts
 frontend/node_modules
