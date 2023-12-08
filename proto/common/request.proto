@@ -9,3 +9,7 @@ message ListCondition {
   int64 perPage = 2;
   repeated string orderBy = 3;
 }
+
+message EmptyRequest {
+
+}

@@ -14,6 +14,10 @@ var (
 		"/users/register",
 		"/users/registerApplications",
 	}
+
+	unauthorizedTokenAvailablePaths = []string{
+		"/users/validOTP",
+	}
 )
 
 const (
@@ -35,5 +39,13 @@ func auth(ctx *gin.Context) {
 		return
 	}
 	ctx.Request.Header.Set(USER_ID_HEADER, userClaim.UserId)
+	if !userClaim.IsAuthorized {
+		if utils.StrInArray(ctx.FullPath(), &unauthorizedTokenAvailablePaths) {
+			ctx.Next()
+		} else {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, pb_common.EmptyResponse{})
+		}
+		return
+	}
 	ctx.Next()
 }

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"github.com/PPG007/copier"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -20,12 +21,21 @@ func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse,
 	if err != nil {
 		return nil, err
 	}
-	token, err := model.SignToken(ctx, user)
+	token, err := model.SignToken(ctx, user, !user.Is2FAEnabled)
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb_user.LoginResponse{}
-	resp.Token = token
+	return formatLoginResponse(ctx, user, token, user.Is2FAEnabled), nil
+}
+
+func formatLoginResponse(ctx context.Context, user model.User, token string, need2FA bool) *pb_user.LoginResponse {
+	resp := &pb_user.LoginResponse{
+		Token:   token,
+		Need2FA: need2FA,
+	}
+	if need2FA {
+		return resp
+	}
 	utils.Copier().RegisterDiffPairs([]copier.DiffPair{
 		{
 			Origin: "Roles",
@@ -38,7 +48,7 @@ func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse,
 		}
 		return permissions
 	}).From(user).To(resp)
-	return resp, nil
+	return resp
 }
 
 var LoginController = c_utils.NewGinController[*pb_user.LoginRequest, *pb_user.LoginResponse](login)

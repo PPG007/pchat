@@ -2,6 +2,10 @@ package model
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base32"
+	"github.com/PPG007/gotp"
+	"github.com/google/uuid"
 	"github.com/qiniu/qmgo"
 	"golang.org/x/crypto/bcrypt"
 	"pchat/repository"
@@ -28,16 +32,26 @@ var (
 )
 
 type User struct {
-	Id         bson.ObjectId   `bson:"_id"`
-	Name       string          `bson:"name"`
-	Password   string          `bson:"password"`
-	Email      string          `bson:"email"`
-	Roles      []bson.ObjectId `bson:"roles"`
-	CreatedAt  time.Time       `bson:"createdAt"`
-	UpdatedAt  time.Time       `bson:"updatedAt"`
-	Status     string          `bson:"status"`
-	Avatar     string          `bson:"avatar"`
-	ChatStatus string          `bson:"chatStatus"`
+	Id            bson.ObjectId   `bson:"_id"`
+	Name          string          `bson:"name"`
+	Password      string          `bson:"password"`
+	Email         string          `bson:"email"`
+	Roles         []bson.ObjectId `bson:"roles"`
+	CreatedAt     time.Time       `bson:"createdAt"`
+	UpdatedAt     time.Time       `bson:"updatedAt"`
+	Status        string          `bson:"status"`
+	Avatar        string          `bson:"avatar"`
+	ChatStatus    string          `bson:"chatStatus"`
+	Is2FAEnabled  bool            `bson:"is2FAEnabled"`
+	OTPSecret     string          `bson:"otpSecret"`
+	RecoveryCodes []string        `bson:"recoveryCodes"`
+}
+
+func (*User) GetById(ctx context.Context, id bson.ObjectId) (User, error) {
+	var user User
+	condition := GenIdCondition(id)
+	err := repository.FindOne(ctx, C_USER, condition, &user)
+	return user, err
 }
 
 func (*User) GetByEmail(ctx context.Context, email string, onlyActivated bool) (User, error) {
@@ -84,16 +98,11 @@ func (*User) CreateNew(ctx context.Context, email, password, reason string, need
 }
 
 func (*User) UpdateById(ctx context.Context, id bson.ObjectId, updater bson.M) error {
-	condition := bson.M{
-		"_id": id,
-	}
-	return repository.UpdateOne(ctx, C_USER, condition, updater)
+	return repository.UpdateOne(ctx, C_USER, GenIdCondition(id), updater)
 }
 
 func (*User) Online(ctx context.Context) (User, error) {
-	condition := bson.M{
-		"_id": utils.GetUserIdAsObjectId(ctx),
-	}
+	condition := GenIdCondition(utils.GetUserIdAsObjectId(ctx))
 	change := qmgo.Change{
 		Update: bson.M{
 			"$set": bson.M{
@@ -108,9 +117,7 @@ func (*User) Online(ctx context.Context) (User, error) {
 }
 
 func (*User) Offline(ctx context.Context) (User, error) {
-	condition := bson.M{
-		"_id": utils.GetUserIdAsObjectId(ctx),
-	}
+	condition := GenIdCondition(utils.GetUserIdAsObjectId(ctx))
 	change := qmgo.Change{
 		Update: bson.M{
 			"$set": bson.M{
@@ -141,4 +148,91 @@ func (*User) Activate(ctx context.Context, ids []bson.ObjectId) error {
 	_, err := repository.UpdateAll(ctx, C_USER, condition, updater)
 	// TODO: send notification
 	return err
+}
+
+func (*User) Enable2FA(ctx context.Context, id bson.ObjectId) (string, []string, error) {
+	rawSecret := make([]byte, 10)
+	n, err := rand.Read(rawSecret)
+	if err != nil {
+		return "", nil, err
+	}
+	rawSecret = rawSecret[:n]
+	secret := base32.StdEncoding.EncodeToString(rawSecret)
+	condition := GenIdCondition(id)
+	codes, _ := CUser.GenerateRecoveryCodes(ctx, id, false)
+	change := qmgo.Change{
+		ReturnNew: true,
+		Update: bson.M{
+			"$set": bson.M{
+				"otpSecret":     secret,
+				"is2FAEnabled":  true,
+				"recoveryCodes": codes,
+			},
+		},
+	}
+	var user User
+	err = repository.FindAndApply(ctx, C_USER, condition, change, &user)
+	if err != nil {
+		return "", nil, err
+	}
+	return gotp.NewTOTP(
+		gotp.WithSecret(rawSecret),
+		gotp.WithLabel(user.Email),
+		gotp.WithIssuer(utils.AppName()),
+	).SignURL(), codes, nil
+}
+
+func (user *User) VerifyOTP(ctx context.Context, input string) (bool, error) {
+	if !user.Is2FAEnabled {
+		return true, nil
+	}
+	if utils.StrInArray(input, &user.RecoveryCodes) {
+		err := user.DisableRecoveryCode(ctx, user.Id, input)
+		if err != nil {
+			return false, err
+		}
+		if len(user.RecoveryCodes) == 1 {
+			utils.GO(ctx, func() {
+				// TODO: send notification
+				user.GenerateRecoveryCodes(ctx, user.Id, true)
+			})
+		}
+		return true, nil
+	}
+	secret, err := base32.StdEncoding.DecodeString(user.OTPSecret)
+	if err != nil {
+		return false, err
+	}
+	return gotp.NewTOTP(
+		gotp.WithSecret(secret),
+	).SignPassword() == input, nil
+}
+
+func (*User) GenerateRecoveryCodes(ctx context.Context, id bson.ObjectId, doUpdate bool) ([]string, error) {
+	length := 10
+	codes := make([]string, 0, length)
+	for i := 0; i < length; i++ {
+		codes = append(codes, uuid.NewString())
+	}
+	if !doUpdate {
+		return codes, nil
+	}
+	condition := GenIdCondition(id)
+	updater := bson.M{
+		"$set": bson.M{
+			"recoveryCodes": codes,
+		},
+	}
+	err := repository.UpdateOne(ctx, C_USER, condition, updater)
+	return codes, err
+}
+
+func (*User) DisableRecoveryCode(ctx context.Context, id bson.ObjectId, code string) error {
+	condition := GenIdCondition(id)
+	updater := bson.M{
+		"$pull": bson.M{
+			"recoveryCodes": code,
+		},
+	}
+	return repository.UpdateOne(ctx, C_USER, condition, updater)
 }

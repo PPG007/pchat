@@ -4,10 +4,13 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	pb_common "pchat/pb/common"
 	"pchat/repository"
 	"pchat/repository/bson"
+	"pchat/utils/log"
+	"runtime"
 	"time"
 )
 
@@ -127,4 +130,18 @@ func FormatPagination(condition bson.M, listCondition *pb_common.ListCondition) 
 		PerPage:   listCondition.PerPage,
 		OrderBy:   listCondition.OrderBy,
 	}
+}
+
+func GO(ctx context.Context, fn func()) {
+	go func() {
+		if r := recover(); r != nil {
+			stack := make([]byte, 4096)
+			stack = stack[:runtime.Stack(stack, false)]
+			err := fmt.Sprintf("%v", r)
+			log.ErrorTrace(ctx, "Panic in Goroutine", log.Fields{
+				"error": err,
+			}, stack)
+		}
+		fn()
+	}()
 }

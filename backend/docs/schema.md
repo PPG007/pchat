@@ -92,7 +92,13 @@
   // 头像
   avatar: "String",
   // 在线状态，online、offline、leaving、busy
-  chatStatus: "String"
+  chatStatus: "String",
+  // 是否开启双因素认证
+  is2FAEnabled: "Boolean",
+  // 双因素认证密钥
+  otpSecret: "String",
+  // 双因素恢复密码
+  recoveryCodes: "[String]",
 }
 ```
 

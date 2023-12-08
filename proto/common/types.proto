@@ -7,3 +7,7 @@ option go_package = "pchat/pb/common";
 message StringValue {
   string value = 1;
 }
+
+message StringArrayValue {
+  repeated string values = 2;
+}
