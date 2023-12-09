@@ -9,4 +9,6 @@ func RegisterRoutes(e *gin.Engine) {
 	group.POST("/approve", ApproveRegisterController)
 	group.PUT("/:id", UpdateProfileController)
 	group.GET("/registerApplications", ListRegisterApplicationController)
+	group.POST("/validOTP", ValidOTP)
+	group.POST("/renewRecoveryCodes", RenewRecoveryCodes)
 }

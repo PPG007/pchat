@@ -40,6 +40,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/PPG007/copier v1.1.0 h1:imike0ftfOqqxZQaAl9CSYAkhy5S76nNhvj+A8D9VAk=
 github.com/PPG007/copier v1.1.0/go.mod h1:q+dK1yVUiICnTJURDRCMiTjG+3blLqzodwMygVYtkUo=
+github.com/PPG007/gotp v1.1.0 h1:rd7bU/SXUgx3BEQjucN8pyG2Uav8LZNMkI3UGbne8J0=
+github.com/PPG007/gotp v1.1.0/go.mod h1:U9rWp25LB5XaULT3wcKehunOJmg4qDpmgujAKCmiKk4=
 github.com/PPG007/pubsub v1.0.0 h1:NvJ/3S9CPRSxkePU0RZk+jshEYbDZrQEuGLnB0dB9g4=
 github.com/PPG007/pubsub v1.0.0/go.mod h1:jYrSGOPSMPGaQyJdy0YEHswzEOU92naMEE2sg/0dPLg=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3dyBCFEj5IhUbnKptjxatkF07cF2ak3yi77so=

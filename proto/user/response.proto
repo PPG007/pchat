@@ -11,6 +11,7 @@ message LoginResponse {
   repeated string permissions = 4;
   string email = 5;
   string avatar = 6;
+  bool need2FA = 7;
 }
 
 message RegisterResponse {
