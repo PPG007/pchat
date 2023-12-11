@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package pchat.error;
+
+option go_package = "pchat/pb/error";
+
+enum CommonError {
+  UNKNOWN_ERROR = 0;
+}

@@ -11,4 +11,6 @@ func RegisterRoutes(e *gin.Engine) {
 	group.GET("/registerApplications", ListRegisterApplicationController)
 	group.POST("/validOTP", ValidOTP)
 	group.POST("/renewRecoveryCodes", RenewRecoveryCodes)
+	group.POST("/enable2FA", Enable2FA)
+	group.POST("/disable2FA", Disable2FA)
 }

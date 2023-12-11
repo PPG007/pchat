@@ -236,3 +236,17 @@ func (*User) DisableRecoveryCode(ctx context.Context, id bson.ObjectId, code str
 	}
 	return repository.UpdateOne(ctx, C_USER, condition, updater)
 }
+
+func (*User) DisableOTP(ctx context.Context, id bson.ObjectId) error {
+	condition := GenIdCondition(id)
+	updater := bson.M{
+		"$unset": bson.M{
+			"recoveryCodes": "",
+			"otpSecret":     "",
+		},
+		"$set": bson.M{
+			"is2FAEnabled": false,
+		},
+	}
+	return repository.UpdateOne(ctx, C_USER, condition, updater)
+}

@@ -17,3 +17,8 @@ message LoginResponse {
 message RegisterResponse {
   bool needAudit = 1;
 }
+
+message Enable2FAResponse {
+  string url = 1;
+  repeated string recoveryCodes = 2;
+}

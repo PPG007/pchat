@@ -4,10 +4,15 @@ package pchat.common;
 
 option go_package = "pchat/pb/common";
 
+import "error/errors.proto";
+
 message EmptyResponse {
 
 }
 
 message ErrorResponse {
   string message = 1;
+  oneof code {
+    pchat.error.CommonError common = 2;
+  }
 }
