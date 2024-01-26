@@ -8,25 +8,36 @@ import "common/request.proto";
 import "common/types.proto";
 
 message LoginRequest {
+  // 邮箱
   string email = 1; // @gotags: valid:"required"
+  // 密码
   string password = 2; // @gotags: valid:"required"
 }
 
 message RegisterRequest {
+  // 邮箱
   string email = 1; // @gotags: valid:"required"
+  // 密码
   string password = 2; // @gotags: valid:"required"
+  // 如果注册需要审核，此字段为申请原因
   string reason = 3;
 }
 
 message AuditRegisterApplicationRequest {
+  // 注册的请求 id 列表
   repeated string ids = 1; // @gotags: valid:"required,objectIdList"
+  // 拒绝原因
   string rejectReason = 2;
+  // 是否通过申请
   bool isApproved = 3;
 }
 
 message UpdateProfileRequest {
+  // 头像
   pchat.common.StringValue avatar = 2;
+  // 密码
   pchat.common.StringValue password = 3;
+  // 昵称
   pchat.common.StringValue name = 4;
 }
 
@@ -35,20 +46,30 @@ message UpdateEmailRequest {
 }
 
 message ListRegisterApplicationRequest {
+  // 分页信息
   pchat.common.ListCondition listCondition = 1;
+  // 申请状态，approved（已通过）、rejected（已拒绝）、pending（待审核）
   repeated string status = 2; // @gotags: valid:"in(approved|rejected|pending)"
 }
 
 message ListRegisterApplicationResponse {
+  // 总数
   int64 total = 1;
+  // 详情
   repeated RegisterApplicationDetail items = 2;
 }
 
 message RegisterApplicationDetail {
+  // id
   string id = 1;
+  // 邮箱
   string email = 2;
+  // 状态，approved（已通过）、rejected（已拒绝）、pending（待审核）
   string status = 3;
+  // 申请时间
   string createdAt = 4;
+  // 申请原因
   string reason = 5;
+  // 拒绝原因
   string rejectReason = 6;
 }

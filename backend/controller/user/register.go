@@ -9,6 +9,16 @@ import (
 	pb_user "pchat/pb/user"
 )
 
+//	@BasePath	/users
+
+// @Description
+// @Router		/register [post]
+// @Tags		账户
+// @Summary	注册
+// @Accept		json
+// @Produce	json
+// @Param		body	body		pb_user.RegisterRequest	true	"body"
+// @Success	200		{object}	pb_user.RegisterResponse
 func register(ctx *gin.Context, req *pb_user.RegisterRequest) (*pb_user.RegisterResponse, error) {
 	_, err := model.CUser.GetByEmail(ctx, req.Email, false)
 	if err == nil {

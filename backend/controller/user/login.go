@@ -12,6 +12,16 @@ import (
 	"pchat/utils"
 )
 
+//	@BasePath	/users
+
+//	@Description
+//	@Router		/login [post]
+//	@Tags		账户
+//	@Summary	登录
+//	@Accept		json
+//	@Produce	json
+//	@Success	200		{object}	pb_user.LoginResponse
+//	@Param		body	body		pb_user.LoginRequest	true	"body"
 func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse, error) {
 	user, err := model.CUser.GetByEmail(ctx, req.Email, true)
 	if err != nil {

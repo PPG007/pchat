@@ -1,0 +1,335 @@
+definitions:
+  common.ListCondition:
+    properties:
+      orderBy:
+        description: 排序字段
+        items:
+          type: string
+        type: array
+      page:
+        description: 页码
+        type: integer
+      perPage:
+        description: 每页大小
+        type: integer
+    type: object
+  common.StringArrayValue:
+    properties:
+      values:
+        items:
+          type: string
+        type: array
+    type: object
+  common.StringValue:
+    properties:
+      value:
+        type: string
+    type: object
+  user.AuditRegisterApplicationRequest:
+    properties:
+      ids:
+        description: 注册的请求 id 列表
+        items:
+          type: string
+        type: array
+      isApproved:
+        description: 是否通过申请
+        type: boolean
+      rejectReason:
+        description: 拒绝原因
+        type: string
+    type: object
+  user.Enable2FAResponse:
+    properties:
+      recoveryCodes:
+        description: 恢复码
+        items:
+          type: string
+        type: array
+      url:
+        description: OTP 认证 url
+        type: string
+    type: object
+  user.ListRegisterApplicationRequest:
+    properties:
+      listCondition:
+        allOf:
+        - $ref: '#/definitions/common.ListCondition'
+        description: 分页信息
+      status:
+        description: 申请状态，approved（已通过）、rejected（已拒绝）、pending（待审核）
+        items:
+          type: string
+        type: array
+    type: object
+  user.ListRegisterApplicationResponse:
+    properties:
+      items:
+        description: 详情
+        items:
+          $ref: '#/definitions/user.RegisterApplicationDetail'
+        type: array
+      total:
+        description: 总数
+        type: integer
+    type: object
+  user.LoginRequest:
+    properties:
+      email:
+        description: 邮箱
+        type: string
+      password:
+        description: 密码
+        type: string
+    type: object
+  user.LoginResponse:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      email:
+        description: 邮箱
+        type: string
+      id:
+        description: userId
+        type: string
+      name:
+        description: 用户名
+        type: string
+      need2FA:
+        description: 是否需要双因素验证
+        type: boolean
+      permissions:
+        description: 权限列表
+        items:
+          type: string
+        type: array
+      token:
+        description: 凭证
+        type: string
+    type: object
+  user.RegisterApplicationDetail:
+    properties:
+      createdAt:
+        description: 申请时间
+        type: string
+      email:
+        description: 邮箱
+        type: string
+      id:
+        description: id
+        type: string
+      reason:
+        description: 申请原因
+        type: string
+      rejectReason:
+        description: 拒绝原因
+        type: string
+      status:
+        description: 状态，approved（已通过）、rejected（已拒绝）、pending（待审核）
+        type: string
+    type: object
+  user.RegisterRequest:
+    properties:
+      email:
+        description: 邮箱
+        type: string
+      password:
+        description: 密码
+        type: string
+      reason:
+        description: 如果注册需要审核，此字段为申请原因
+        type: string
+    type: object
+  user.RegisterResponse:
+    properties:
+      needAudit:
+        description: 是否需要审核
+        type: boolean
+    type: object
+  user.UpdateProfileRequest:
+    properties:
+      avatar:
+        allOf:
+        - $ref: '#/definitions/common.StringValue'
+        description: 头像
+      name:
+        allOf:
+        - $ref: '#/definitions/common.StringValue'
+        description: 昵称
+      password:
+        allOf:
+        - $ref: '#/definitions/common.StringValue'
+        description: 密码
+    type: object
+info:
+  contact: {}
+paths:
+  /{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 占位符
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 更新个人信息
+      tags:
+      - 账户
+  /approve:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.AuditRegisterApplicationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 处理注册申请
+      tags:
+      - 账户
+  /disable2FA:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 禁用双因素认证
+      tags:
+      - 账户
+  /enable2FA:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Enable2FAResponse'
+      summary: 开启双因素认证
+      tags:
+      - 账户
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.LoginResponse'
+      summary: 登录
+      tags:
+      - 账户
+  /register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.RegisterResponse'
+      summary: 注册
+      tags:
+      - 账户
+  /registerApplications:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.ListRegisterApplicationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ListRegisterApplicationResponse'
+      summary: 获取注册申请列表
+      tags:
+      - 账户
+  /renewRecoveryCodes:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.StringArrayValue'
+      summary: 刷新恢复码
+      tags:
+      - 账户
+  /validOTP:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/common.StringValue'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.LoginResponse'
+      summary: 验证双因素密码
+      tags:
+      - 账户
+swagger: "2.0"

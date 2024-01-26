@@ -9,6 +9,16 @@ import (
 	"pchat/utils"
 )
 
+//	@BasePath	/users
+
+// @Description
+// @Router		/registerApplications [get]
+// @Tags		账户
+// @Summary	获取注册申请列表
+// @Accept		json
+// @Produce	json
+// @Success	200		{object}	pb_user.ListRegisterApplicationResponse
+// @Param		body	body		pb_user.ListRegisterApplicationRequest	true	"body"
 func listRegisterApplication(ctx *gin.Context, req *pb_user.ListRegisterApplicationRequest) (*pb_user.ListRegisterApplicationResponse, error) {
 	condition := bson.M{}
 	if len(req.Status) > 0 {

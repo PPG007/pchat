@@ -5,8 +5,11 @@ package pchat.common;
 option go_package = "pchat/pb/common";
 
 message ListCondition {
+  // 页码
   int64 page = 1;
+  // 每页大小
   int64 perPage = 2;
+  // 排序字段
   repeated string orderBy = 3;
 }
 

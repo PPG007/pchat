@@ -8,6 +8,15 @@ import (
 	"pchat/utils"
 )
 
+//	@BasePath	/users
+
+// @Description
+// @Router		/disable2FA [post]
+// @Tags		账户
+// @Summary	禁用双因素认证
+// @Accept		json
+// @Produce	json
+// @Success	200	{object}	nil
 func disable2FA(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_common.EmptyResponse, error) {
 	err := model.CUser.DisableOTP(ctx, utils.GetUserIdAsObjectId(ctx))
 	if err != nil {

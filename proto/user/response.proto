@@ -5,20 +5,30 @@ package pchat.user;
 option go_package = "pchat/pb/user";
 
 message LoginResponse {
+  // 凭证
   string token = 1;
+  // userId
   string id = 2;
+  // 用户名
   string name = 3;
+  // 权限列表
   repeated string permissions = 4;
+  // 邮箱
   string email = 5;
+  // 头像
   string avatar = 6;
+  // 是否需要双因素验证
   bool need2FA = 7;
 }
 
 message RegisterResponse {
+  // 是否需要审核
   bool needAudit = 1;
 }
 
 message Enable2FAResponse {
+  // OTP 认证 url
   string url = 1;
+  // 恢复码
   repeated string recoveryCodes = 2;
 }
