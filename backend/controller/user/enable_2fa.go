@@ -9,6 +9,15 @@ import (
 	"pchat/utils"
 )
 
+//	@BasePath	/users
+
+// @Description
+// @Router		/enable2FA [post]
+// @Tags		账户
+// @Summary	开启双因素认证
+// @Accept		json
+// @Produce	json
+// @Success	200	{object}	pb_user.Enable2FAResponse
 func enable2FA(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_user.Enable2FAResponse, error) {
 	url, recoveryCodes, err := model.CUser.Enable2FA(ctx, utils.GetUserIdAsObjectId(ctx))
 	if err != nil {
