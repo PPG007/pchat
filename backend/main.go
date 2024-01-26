@@ -15,6 +15,14 @@ var (
 	httpPort = flag.Int("httpPort", 8080, "the http server listening port")
 )
 
+// @title						PChat API
+// @version					1.0
+// @description				PChat 的接口文档
+// @BasePath					/v1
+// @securityDefinitions.apiKey	token
+// @in							header
+// @name						X-Access-Token
+// @description				jwt string
 func main() {
 	loadConfig()
 	InitDefaultResources()

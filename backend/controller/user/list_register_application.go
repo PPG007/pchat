@@ -9,10 +9,8 @@ import (
 	"pchat/utils"
 )
 
-//	@BasePath	/users
-
 // @Description
-// @Router		/registerApplications [get]
+// @Router		/users/registerApplications [get]
 // @Tags		账户
 // @Summary	获取注册申请列表
 // @Accept		json

@@ -8,15 +8,13 @@ import (
 	"pchat/utils"
 )
 
-//	@BasePath	/users
-
-//	@Description
-//	@Router		/renewRecoveryCodes [post]
-//	@Tags		账户
-//	@Summary	刷新恢复码
-//	@Accept		json
-//	@Produce	json
-//	@Success	200	{object}	pb_common.StringArrayValue
+// @Description
+// @Router		/users/renewRecoveryCodes [post]
+// @Tags		账户
+// @Summary	刷新恢复码
+// @Accept		json
+// @Produce	json
+// @Success	200	{object}	pb_common.StringArrayValue
 func renewRecoveryCodes(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_common.StringArrayValue, error) {
 	codes, err := model.CUser.GenerateRecoveryCodes(ctx, utils.GetUserIdAsObjectId(ctx), true)
 	if err != nil {

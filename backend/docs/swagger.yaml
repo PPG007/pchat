@@ -1,3 +1,4 @@
+basePath: /v1
 definitions:
   common.ListCondition:
     properties:
@@ -164,8 +165,11 @@ definitions:
     type: object
 info:
   contact: {}
+  description: PChat 的接口文档
+  title: PChat API
+  version: "1.0"
 paths:
-  /{id}:
+  /users/{id}:
     put:
       consumes:
       - application/json
@@ -189,7 +193,7 @@ paths:
       summary: 更新个人信息
       tags:
       - 账户
-  /approve:
+  /users/approve:
     post:
       consumes:
       - application/json
@@ -208,7 +212,7 @@ paths:
       summary: 处理注册申请
       tags:
       - 账户
-  /disable2FA:
+  /users/disable2FA:
     post:
       consumes:
       - application/json
@@ -220,7 +224,7 @@ paths:
       summary: 禁用双因素认证
       tags:
       - 账户
-  /enable2FA:
+  /users/enable2FA:
     post:
       consumes:
       - application/json
@@ -234,7 +238,7 @@ paths:
       summary: 开启双因素认证
       tags:
       - 账户
-  /login:
+  /users/login:
     post:
       consumes:
       - application/json
@@ -255,7 +259,7 @@ paths:
       summary: 登录
       tags:
       - 账户
-  /register:
+  /users/register:
     post:
       consumes:
       - application/json
@@ -276,7 +280,7 @@ paths:
       summary: 注册
       tags:
       - 账户
-  /registerApplications:
+  /users/registerApplications:
     get:
       consumes:
       - application/json
@@ -297,7 +301,7 @@ paths:
       summary: 获取注册申请列表
       tags:
       - 账户
-  /renewRecoveryCodes:
+  /users/renewRecoveryCodes:
     post:
       consumes:
       - application/json
@@ -311,7 +315,7 @@ paths:
       summary: 刷新恢复码
       tags:
       - 账户
-  /validOTP:
+  /users/validOTP:
     post:
       consumes:
       - application/json
@@ -332,4 +336,10 @@ paths:
       summary: 验证双因素密码
       tags:
       - 账户
+securityDefinitions:
+  token:
+    description: jwt string
+    in: header
+    name: X-Access-Token
+    type: apiKey
 swagger: "2.0"

@@ -13,17 +13,15 @@ import (
 	"pchat/repository/bson"
 )
 
-//	@BasePath	/users
-
-//	@Description
-//	@Router		/{id} [put]
-//	@Tags		账户
-//	@Summary	更新个人信息
-//	@Accept		json
-//	@Produce	json
-//	@Param		id		path		string							true	"占位符"
-//	@Param		body	body		pb_user.UpdateProfileRequest	true	"body"
-//	@Success	200		{object}	nil
+// @Description
+// @Router		/users/{id} [put]
+// @Tags		账户
+// @Summary	更新个人信息
+// @Accept		json
+// @Produce	json
+// @Param		id		path		string							true	"占位符"
+// @Param		body	body		pb_user.UpdateProfileRequest	true	"body"
+// @Success	200		{object}	nil
 func updateProfile(ctx *gin.Context, req *pb_user.UpdateProfileRequest) (*pb_common.EmptyResponse, error) {
 	setter := bson.M{}
 	id := utils.GetUserId(ctx)

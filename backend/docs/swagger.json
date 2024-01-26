@@ -1,10 +1,14 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "PChat 的接口文档",
+        "title": "PChat API",
+        "contact": {},
+        "version": "1.0"
     },
+    "basePath": "/v1",
     "paths": {
-        "/approve": {
+        "/users/approve": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -34,7 +38,7 @@
                 }
             }
         },
-        "/disable2FA": {
+        "/users/disable2FA": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -53,7 +57,7 @@
                 }
             }
         },
-        "/enable2FA": {
+        "/users/enable2FA": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -75,7 +79,7 @@
                 }
             }
         },
-        "/login": {
+        "/users/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -108,7 +112,7 @@
                 }
             }
         },
-        "/register": {
+        "/users/register": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -141,7 +145,7 @@
                 }
             }
         },
-        "/registerApplications": {
+        "/users/registerApplications": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -174,7 +178,7 @@
                 }
             }
         },
-        "/renewRecoveryCodes": {
+        "/users/renewRecoveryCodes": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -196,7 +200,7 @@
                 }
             }
         },
-        "/validOTP": {
+        "/users/validOTP": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -229,7 +233,7 @@
                 }
             }
         },
-        "/{id}": {
+        "/users/{id}": {
             "put": {
                 "consumes": [
                     "application/json"
@@ -511,6 +515,14 @@
                     ]
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "token": {
+            "description": "jwt string",
+            "type": "apiKey",
+            "name": "X-Access-Token",
+            "in": "header"
         }
     }
 }

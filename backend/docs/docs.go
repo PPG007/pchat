@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/approve": {
+        "/users/approve": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -45,7 +45,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/disable2FA": {
+        "/users/disable2FA": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -64,7 +64,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/enable2FA": {
+        "/users/enable2FA": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -86,7 +86,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/login": {
+        "/users/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -119,7 +119,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/register": {
+        "/users/register": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -152,7 +152,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/registerApplications": {
+        "/users/registerApplications": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -185,7 +185,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/renewRecoveryCodes": {
+        "/users/renewRecoveryCodes": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -207,7 +207,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/validOTP": {
+        "/users/validOTP": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -240,7 +240,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{id}": {
+        "/users/{id}": {
             "put": {
                 "consumes": [
                     "application/json"
@@ -523,17 +523,25 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "token": {
+            "description": "jwt string",
+            "type": "apiKey",
+            "name": "X-Access-Token",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/v1",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "PChat API",
+	Description:      "PChat 的接口文档",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

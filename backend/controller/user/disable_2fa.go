@@ -8,10 +8,8 @@ import (
 	"pchat/utils"
 )
 
-//	@BasePath	/users
-
 // @Description
-// @Router		/disable2FA [post]
+// @Router		/users/disable2FA [post]
 // @Tags		账户
 // @Summary	禁用双因素认证
 // @Accept		json

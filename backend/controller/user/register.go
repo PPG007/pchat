@@ -9,10 +9,8 @@ import (
 	pb_user "pchat/pb/user"
 )
 
-//	@BasePath	/users
-
 // @Description
-// @Router		/register [post]
+// @Router		/users/register [post]
 // @Tags		账户
 // @Summary	注册
 // @Accept		json
