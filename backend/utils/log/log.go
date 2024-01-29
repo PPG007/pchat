@@ -20,11 +20,16 @@ func init() {
 }
 
 func Info(ctx context.Context, msg string, extra logrus.Fields) {
-	newTraceEntry(ctx, extra).Info(msg)
+	entry := newTraceEntry(ctx, extra)
+	if msg != "" {
+		entry.Info(msg)
+	} else {
+		entry.Print()
+	}
 }
 
 func Warn(ctx context.Context, msg string, extra logrus.Fields) {
-	newTraceEntry(ctx, extra).Warn(extra)
+	newTraceEntry(ctx, extra).Warn(msg)
 }
 
 func WarnTrace(ctx context.Context, msg string, extra logrus.Fields, trace []byte) {
