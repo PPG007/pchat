@@ -13,3 +13,5 @@ protoc \
   --proto_path="${SRC_DIR}" \
   -I ${SRC_DIR} \
   ${SRC_DIR}/**/*.proto
+
+../backend/scripts/error/gen

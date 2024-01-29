@@ -1,0 +1,9 @@
+common:
+  prefix: 1000
+  codes:
+    - unknown
+    - unauthenticated
+user:
+  prefix: 2000
+  codes:
+    - notFound
