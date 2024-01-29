@@ -10,11 +10,13 @@ import (
 )
 
 func recovery(ctx *gin.Context) {
+	accessLog := initAccessLog(ctx)
 	defer func() {
 		if r := recover(); r != nil {
 			stack := make([]byte, 4096)
 			stack = stack[:runtime.Stack(stack, false)]
 			err := fmt.Sprintf("%v", r)
+			accessLog.Record(ctx)
 			log.ErrorTrace(ctx, "Uncaught panic", log.Fields{
 				"error": err,
 			}, stack)
