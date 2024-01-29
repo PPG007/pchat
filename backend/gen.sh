@@ -8,6 +8,8 @@ protoc -I ${SRC_DIR} \
   --go_out=${OUT_DIR} \
   --go_opt paths=source_relative  ${SRC_DIR}/**/*.proto
 
+./scripts/errors/gen
+
 protoc-go-inject-tag -input="${OUT_DIR}/**/*.pb.go"
 swag fmt
 swag init -g main.go -o docs

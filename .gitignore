@@ -1,4 +1,6 @@
 .idea
 backend/pb/**/*.pb.go
+backend/errors/codes.go
+frontend/src/errors/index.ts
 frontend/src/pb/**/*.ts
 frontend/node_modules
