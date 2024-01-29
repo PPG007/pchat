@@ -4,10 +4,7 @@ import (
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"net/http"
-)
-
-const (
-	RESPONSE_BODY_KEY = "responseBody"
+	"pchat/utils"
 )
 
 type responseWriter struct {
@@ -28,6 +25,6 @@ func responseWriterMiddleware(ctx *gin.Context) {
 	ctx.Writer = writer
 	ctx.Next()
 	if ctx.Writer.Status() >= http.StatusBadRequest {
-		ctx.Set(RESPONSE_BODY_KEY, writer.Body.String())
+		utils.SetResponseBody(ctx, writer.Body.String())
 	}
 }

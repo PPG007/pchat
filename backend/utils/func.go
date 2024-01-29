@@ -4,8 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	pb_common "pchat/pb/common"
 	"pchat/repository"
 	"pchat/repository/bson"
@@ -80,24 +80,6 @@ func ParseSecretString(key string) []byte {
 	return byteKey
 }
 
-const (
-	USER_ID_HEADER = "X-User-Id"
-)
-
-func GetUserId(ctx context.Context) string {
-	if ginCtx, ok := ctx.(*gin.Context); ok {
-		return ginCtx.GetHeader(USER_ID_HEADER)
-	}
-	if userId, ok := ctx.Value(USER_ID_HEADER).(string); ok {
-		return userId
-	}
-	return ""
-}
-
-func GetUserIdAsObjectId(ctx context.Context) bson.ObjectId {
-	return bson.NewObjectIdFromHex(GetUserId(ctx))
-}
-
 func GetFirstDayInYear(arg time.Time) time.Time {
 	return time.Date(arg.Year(), time.January, 1, 0, 0, 0, 0, time.Local)
 }
@@ -144,4 +126,12 @@ func GO(ctx context.Context, fn func()) {
 		}
 		fn()
 	}()
+}
+
+func MarshalInterfaceToString(obj interface{}) string {
+	b, err := json.Marshal(obj)
+	if err != nil {
+		return ""
+	}
+	return string(b)
 }

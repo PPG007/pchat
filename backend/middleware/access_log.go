@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"io"
 	"net"
+	"pchat/utils"
 	"strings"
 	"time"
 )
@@ -35,6 +37,7 @@ func initAccessLog(ctx *gin.Context) AccessLog {
 }
 
 func (accessLog AccessLog) Record(ctx *gin.Context) {
+	// TODO: read from nginx header
 	remoteAddr, remotePort, _ := net.SplitHostPort(strings.TrimSpace(ctx.Request.RemoteAddr))
 	accessLog.Method = ctx.Request.Method
 	accessLog.Url = ctx.Request.URL.RequestURI()
@@ -46,12 +49,16 @@ func (accessLog AccessLog) Record(ctx *gin.Context) {
 	accessLog.ContentLength = ctx.Writer.Size()
 	accessLog.Host = ctx.Request.Host
 	accessLog.ResponseTime = time.Now().UnixMilli() - accessLog.StartTime.UnixMilli()
-	accessLog.RequestId = ctx.GetHeader(REQUEST_ID_HEADER)
-	accessLog.UserId = ctx.GetHeader(USER_ID_HEADER)
+	accessLog.RequestId = utils.GetRequestId(ctx)
+	accessLog.UserId = utils.GetUserId(ctx)
 	if accessLog.StatusCode >= 400 {
-		accessLog.Body = ctx.GetString(RESPONSE_BODY_KEY)
+		accessLog.Body = utils.GetResponseBody(ctx)
 	}
-	// TODO:
+	accessLog.print()
+}
+
+func (a AccessLog) print() {
+	logrus.Println(utils.MarshalInterfaceToString(a))
 }
 
 func accessLog(ctx *gin.Context) {

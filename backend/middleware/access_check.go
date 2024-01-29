@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"os"
+	"pchat/utils"
 	"pchat/utils/log"
 )
 
@@ -17,7 +18,7 @@ func init() {
 func accessCheck(ctx *gin.Context) {
 	// TODO:
 	log.Info(ctx, "access check", log.Fields{
-		"userId": ctx.GetHeader(USER_ID_HEADER),
+		"userId": utils.GetUserId(ctx),
 	})
 	ctx.Next()
 }

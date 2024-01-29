@@ -20,17 +20,12 @@ var (
 	}
 )
 
-const (
-	TOKEN_HEADER   = "X-Access-Token"
-	USER_ID_HEADER = "X-User-Id"
-)
-
 func auth(ctx *gin.Context) {
 	if utils.StrInArray(ctx.FullPath(), &noAuthPaths) {
 		ctx.Next()
 		return
 	}
-	token := ctx.GetHeader(TOKEN_HEADER)
+	token := utils.GetToken(ctx)
 	userClaim, err := model.ValidToken(ctx, token)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, pb_common.ErrorResponse{
@@ -38,7 +33,7 @@ func auth(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.Request.Header.Set(USER_ID_HEADER, userClaim.UserId)
+	utils.SetUserId(ctx, userClaim.UserId)
 	if !userClaim.IsAuthorized {
 		if utils.StrInArray(ctx.FullPath(), &unauthorizedTokenAvailablePaths) {
 			ctx.Next()

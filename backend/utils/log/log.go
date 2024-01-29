@@ -3,6 +3,7 @@ package log
 import (
 	"context"
 	"github.com/sirupsen/logrus"
+	"os"
 	"time"
 )
 
@@ -17,6 +18,7 @@ func init() {
 		TimestampFormat: time.RFC3339,
 		PrettyPrint:     true,
 	})
+	logrus.SetOutput(os.Stdout)
 }
 
 func Info(ctx context.Context, msg string, extra logrus.Fields) {
