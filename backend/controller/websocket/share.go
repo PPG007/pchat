@@ -1,8 +1,16 @@
 package websocket
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+	"pchat/controller/core"
+)
 
-func RegisterWS(engin *gin.Engine) {
-	group := engin.Group("/ws")
-	group.GET("/chat", ChatHandler)
+var Group = core.NewGroup("/ws")
+
+func init() {
+	Group.Register(&core.Controller{
+		Path:    "/chat",
+		Method:  http.MethodGet,
+		Handler: ChatHandler,
+	})
 }

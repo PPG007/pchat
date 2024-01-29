@@ -2,7 +2,6 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_common "pchat/pb/common"
 	"pchat/utils"
@@ -24,5 +23,3 @@ func renewRecoveryCodes(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_comm
 		Values: codes,
 	}, nil
 }
-
-var RenewRecoveryCodes = c_utils.NewGinController(renewRecoveryCodes)

@@ -2,7 +2,6 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_user "pchat/pb/user"
 	"pchat/repository/bson"
@@ -17,7 +16,7 @@ import (
 // @Produce	json
 // @Success	200		{object}	pb_user.ListRegisterApplicationResponse
 // @Param		body	body		pb_user.ListRegisterApplicationRequest	true	"body"
-func listRegisterApplication(ctx *gin.Context, req *pb_user.ListRegisterApplicationRequest) (*pb_user.ListRegisterApplicationResponse, error) {
+func listRegisterApplications(ctx *gin.Context, req *pb_user.ListRegisterApplicationRequest) (*pb_user.ListRegisterApplicationResponse, error) {
 	condition := bson.M{}
 	if len(req.Status) > 0 {
 		condition["status"] = bson.M{
@@ -35,5 +34,3 @@ func listRegisterApplication(ctx *gin.Context, req *pb_user.ListRegisterApplicat
 		Items: details,
 	}, nil
 }
-
-var ListRegisterApplicationController = c_utils.NewGinController[*pb_user.ListRegisterApplicationRequest, *pb_user.ListRegisterApplicationResponse](listRegisterApplication)

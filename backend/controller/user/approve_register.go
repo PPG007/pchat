@@ -2,7 +2,6 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
@@ -31,5 +30,3 @@ func approveRegister(ctx *gin.Context, req *pb_user.AuditRegisterApplicationRequ
 	}
 	return &pb_common.EmptyResponse{}, nil
 }
-
-var ApproveRegisterController = c_utils.NewGinController[*pb_user.AuditRegisterApplicationRequest, *pb_common.EmptyResponse](approveRegister)

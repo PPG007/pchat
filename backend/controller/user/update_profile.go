@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	c_utils "pchat/controller/utils"
 	"pchat/utils"
 
 	"pchat/model"
@@ -49,5 +48,3 @@ func updateProfile(ctx *gin.Context, req *pb_user.UpdateProfileRequest) (*pb_com
 	}
 	return &pb_common.EmptyResponse{}, nil
 }
-
-var UpdateProfileController = c_utils.NewGinController[*pb_user.UpdateProfileRequest, *pb_common.EmptyResponse](updateProfile)

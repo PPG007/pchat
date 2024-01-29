@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/qiniu/qmgo"
-	"pchat/controller/utils"
 	"pchat/model"
 	pb_user "pchat/pb/user"
 )
@@ -38,5 +37,3 @@ func register(ctx *gin.Context, req *pb_user.RegisterRequest) (*pb_user.Register
 		NeedAudit: setting.ChatSetting.MustBeApprovedBeforeRegister,
 	}, nil
 }
-
-var RegisterController = utils.NewGinController[*pb_user.RegisterRequest, *pb_user.RegisterResponse](register)

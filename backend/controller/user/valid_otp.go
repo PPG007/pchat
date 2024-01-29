@@ -3,7 +3,6 @@ package user
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
@@ -33,5 +32,3 @@ func validOTP(ctx *gin.Context, req *pb_common.StringValue) (*pb_user.LoginRespo
 	token, err := model.SignToken(ctx, user, true)
 	return formatLoginResponse(ctx, user, token, false), nil
 }
-
-var ValidOTP = c_utils.NewGinController[*pb_common.StringValue, *pb_user.LoginResponse](validOTP)

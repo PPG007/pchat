@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"os"
 	"pchat/controller"
 	"pchat/cron"
 	"pchat/middleware"
@@ -13,6 +14,8 @@ import (
 var (
 	httpHost = flag.String("httpHost", "0.0.0.0", "the http server listening host")
 	httpPort = flag.Int("httpPort", 8080, "the http server listening port")
+
+	isDebug = cast.ToBool(os.Getenv("IS_DEBUG"))
 )
 
 // @title						PChat API
@@ -38,8 +41,10 @@ func loadConfig() {
 }
 
 func startGin() {
-	e := gin.New()
+	e := controller.GetRoot(isDebug)
 	middleware.RegisterMiddlewares(e)
-	controller.RegisterControllers(e)
-	e.Run(fmt.Sprintf("%s:%d", viper.GetString("httpHost"), viper.GetInt("httpPort")))
+	err := e.Run(fmt.Sprintf("%s:%d", viper.GetString("httpHost"), viper.GetInt("httpPort")))
+	if err != nil {
+		panic(err)
+	}
 }

@@ -2,7 +2,6 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
@@ -26,5 +25,3 @@ func enable2FA(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_user.Enable2F
 		RecoveryCodes: recoveryCodes,
 	}, nil
 }
-
-var Enable2FA = c_utils.NewGinController(enable2FA)

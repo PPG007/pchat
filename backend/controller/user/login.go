@@ -5,7 +5,6 @@ import (
 	"github.com/PPG007/copier"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	c_utils "pchat/controller/utils"
 	"pchat/model"
 	pb_user "pchat/pb/user"
 	"pchat/repository/bson"
@@ -58,5 +57,3 @@ func formatLoginResponse(ctx context.Context, user model.User, token string, nee
 	}).From(user).To(resp)
 	return resp
 }
-
-var LoginController = c_utils.NewGinController[*pb_user.LoginRequest, *pb_user.LoginResponse](login)
