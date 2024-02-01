@@ -1,4 +1,4 @@
-package model
+package user
 
 import "pchat/repository/bson"
 

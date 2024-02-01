@@ -3,7 +3,7 @@ package user
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"pchat/model"
+	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
 	"pchat/utils"
@@ -18,7 +18,7 @@ import (
 // @Param		body	body		pb_common.StringValue	true	"body"
 // @Success	200		{object}	pb_user.LoginResponse
 func validOTP(ctx *gin.Context, req *pb_common.StringValue) (*pb_user.LoginResponse, error) {
-	user, err := model.CUser.GetById(ctx, utils.GetUserIdAsObjectId(ctx))
+	user, err := model_user.CUser.GetById(ctx, utils.GetUserIdAsObjectId(ctx))
 	if err != nil {
 		return nil, err
 	}
@@ -29,6 +29,6 @@ func validOTP(ctx *gin.Context, req *pb_common.StringValue) (*pb_user.LoginRespo
 	if !ok {
 		return nil, errors.New("invalid OTP")
 	}
-	token, err := model.SignToken(ctx, user, true)
+	token, err := model_user.SignToken(ctx, user, true)
 	return formatLoginResponse(ctx, user, token, false), nil
 }

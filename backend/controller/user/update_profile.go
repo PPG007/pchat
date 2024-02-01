@@ -4,9 +4,9 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	model_user "pchat/model/user"
 	"pchat/utils"
 
-	"pchat/model"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
 	"pchat/repository/bson"
@@ -41,7 +41,7 @@ func updateProfile(ctx *gin.Context, req *pb_user.UpdateProfileRequest) (*pb_com
 		setter["name"] = req.Name.Value
 	}
 	if len(setter) > 0 {
-		err := model.CUser.UpdateById(ctx, bson.NewObjectIdFromHex(id), bson.M{"$set": setter})
+		err := model_user.CUser.UpdateById(ctx, bson.NewObjectIdFromHex(id), bson.M{"$set": setter})
 		if err != nil {
 			return nil, err
 		}

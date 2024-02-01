@@ -5,7 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"net/http"
-	"pchat/model"
+	model_chat "pchat/model/chat"
+	model_user "pchat/model/user"
 	pb_chat "pchat/pb/chat"
 	"pchat/utils"
 )
@@ -29,13 +30,13 @@ func ChatHandler(ctx *gin.Context) {
 		return
 	}
 	defer conn.Close()
-	user, err := model.CUser.Online(ctx)
+	user, err := model_user.CUser.Online(ctx)
 	if err != nil {
 		utils.ResponseError(ctx, err)
 		return
 	}
 	id := bus.Subscribe(MESSAGE_TOPIC, func(args ...interface{}) {
-		message := args[0].(model.Message)
+		message := args[0].(model_chat.Message)
 		if message.Sender.Hex() == utils.GetUserId(ctx) {
 			return
 		}
@@ -59,7 +60,7 @@ func readMessages(ctx *gin.Context, conn *websocket.Conn) {
 			utils.ResponseError(ctx, err)
 			return
 		}
-		m, err := model.CMessage.CreateFromPb(ctx, message)
+		m, err := model_chat.CMessage.CreateFromPb(ctx, message)
 		if err != nil {
 			utils.ResponseError(ctx, err)
 			return

@@ -1,10 +1,11 @@
-package model
+package user
 
 import (
 	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	model_common "pchat/model/common"
 	"pchat/utils"
 	"time"
 )
@@ -50,7 +51,7 @@ func (u UserClaim) GetAudience() (jwt.ClaimStrings, error) {
 }
 
 func SignToken(ctx context.Context, user User, isAuthorized bool) (string, error) {
-	setting, err := CSetting.Get(ctx)
+	setting, err := model_common.CSetting.Get(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +75,7 @@ func SignToken(ctx context.Context, user User, isAuthorized bool) (string, error
 
 func ValidToken(ctx context.Context, token string) (*UserClaim, error) {
 	t, err := jwt.ParseWithClaims(token, &UserClaim{}, func(token *jwt.Token) (interface{}, error) {
-		setting, err := CSetting.Get(ctx)
+		setting, err := model_common.CSetting.Get(ctx)
 		if err != nil {
 			return nil, err
 		}

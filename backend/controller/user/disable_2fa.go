@@ -2,7 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"pchat/model"
+	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	"pchat/utils"
 )
@@ -15,7 +15,7 @@ import (
 // @Produce	json
 // @Success	200	{object}	nil
 func disable2FA(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_common.EmptyResponse, error) {
-	err := model.CUser.DisableOTP(ctx, utils.GetUserIdAsObjectId(ctx))
+	err := model_user.CUser.DisableOTP(ctx, utils.GetUserIdAsObjectId(ctx))
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"pchat/model"
+	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
 	"pchat/utils"
@@ -18,13 +18,13 @@ import (
 // @Param		body	body		pb_user.AuditRegisterApplicationRequest	true	"body"
 func approveRegister(ctx *gin.Context, req *pb_user.AuditRegisterApplicationRequest) (*pb_common.EmptyResponse, error) {
 	if !req.IsApproved {
-		err := model.CRegisterApplication.Reject(ctx, utils.StrArrToObjectIds(req.Ids), req.RejectReason)
+		err := model_user.CRegisterApplication.Reject(ctx, utils.StrArrToObjectIds(req.Ids), req.RejectReason)
 		if err != nil {
 			return nil, err
 		}
 		return &pb_common.EmptyResponse{}, nil
 	}
-	err := model.CRegisterApplication.Approve(ctx, utils.StrArrToObjectIds(req.Ids))
+	err := model_user.CRegisterApplication.Approve(ctx, utils.StrArrToObjectIds(req.Ids))
 	if err != nil {
 		return nil, err
 	}

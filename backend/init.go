@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"pchat/model"
+	model_common "pchat/model/common"
 )
 
 func InitDefaultResources() {
 	ctx := context.Background()
-	model.CSetting.CreateDefaultSetting(ctx)
+	model_common.CSetting.CreateDefaultSetting(ctx)
 }

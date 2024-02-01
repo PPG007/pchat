@@ -1,4 +1,4 @@
-package model
+package user
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/qiniu/qmgo"
 	"golang.org/x/crypto/bcrypt"
+	"pchat/model"
 	"pchat/repository"
 	"pchat/repository/bson"
 	"pchat/utils"
@@ -49,7 +50,7 @@ type User struct {
 
 func (*User) GetById(ctx context.Context, id bson.ObjectId) (User, error) {
 	var user User
-	condition := GenIdCondition(id)
+	condition := model.GenIdCondition(id)
 	err := repository.FindOne(ctx, C_USER, condition, &user)
 	return user, err
 }
@@ -98,11 +99,11 @@ func (*User) CreateNew(ctx context.Context, email, password, reason string, need
 }
 
 func (*User) UpdateById(ctx context.Context, id bson.ObjectId, updater bson.M) error {
-	return repository.UpdateOne(ctx, C_USER, GenIdCondition(id), updater)
+	return repository.UpdateOne(ctx, C_USER, model.GenIdCondition(id), updater)
 }
 
 func (*User) Online(ctx context.Context) (User, error) {
-	condition := GenIdCondition(utils.GetUserIdAsObjectId(ctx))
+	condition := model.GenIdCondition(utils.GetUserIdAsObjectId(ctx))
 	change := qmgo.Change{
 		Update: bson.M{
 			"$set": bson.M{
@@ -117,7 +118,7 @@ func (*User) Online(ctx context.Context) (User, error) {
 }
 
 func (*User) Offline(ctx context.Context) (User, error) {
-	condition := GenIdCondition(utils.GetUserIdAsObjectId(ctx))
+	condition := model.GenIdCondition(utils.GetUserIdAsObjectId(ctx))
 	change := qmgo.Change{
 		Update: bson.M{
 			"$set": bson.M{
@@ -158,7 +159,7 @@ func (*User) Enable2FA(ctx context.Context, id bson.ObjectId) (string, []string,
 	}
 	rawSecret = rawSecret[:n]
 	secret := base32.StdEncoding.EncodeToString(rawSecret)
-	condition := GenIdCondition(id)
+	condition := model.GenIdCondition(id)
 	codes, _ := CUser.GenerateRecoveryCodes(ctx, id, false)
 	change := qmgo.Change{
 		ReturnNew: true,
@@ -217,7 +218,7 @@ func (*User) GenerateRecoveryCodes(ctx context.Context, id bson.ObjectId, doUpda
 	if !doUpdate {
 		return codes, nil
 	}
-	condition := GenIdCondition(id)
+	condition := model.GenIdCondition(id)
 	updater := bson.M{
 		"$set": bson.M{
 			"recoveryCodes": codes,
@@ -228,7 +229,7 @@ func (*User) GenerateRecoveryCodes(ctx context.Context, id bson.ObjectId, doUpda
 }
 
 func (*User) DisableRecoveryCode(ctx context.Context, id bson.ObjectId, code string) error {
-	condition := GenIdCondition(id)
+	condition := model.GenIdCondition(id)
 	updater := bson.M{
 		"$pull": bson.M{
 			"recoveryCodes": code,
@@ -238,7 +239,7 @@ func (*User) DisableRecoveryCode(ctx context.Context, id bson.ObjectId, code str
 }
 
 func (*User) DisableOTP(ctx context.Context, id bson.ObjectId) error {
-	condition := GenIdCondition(id)
+	condition := model.GenIdCondition(id)
 	updater := bson.M{
 		"$unset": bson.M{
 			"recoveryCodes": "",

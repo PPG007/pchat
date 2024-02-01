@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"pchat/model"
+	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	"pchat/utils"
 )
@@ -26,7 +26,7 @@ func auth(ctx *gin.Context) {
 		return
 	}
 	token := utils.GetToken(ctx)
-	userClaim, err := model.ValidToken(ctx, token)
+	userClaim, err := model_user.ValidToken(ctx, token)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, pb_common.ErrorResponse{
 			Message: err.Error(),

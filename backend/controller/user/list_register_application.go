@@ -2,7 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"pchat/model"
+	model_user "pchat/model/user"
 	pb_user "pchat/pb/user"
 	"pchat/repository/bson"
 	"pchat/utils"
@@ -23,7 +23,7 @@ func listRegisterApplications(ctx *gin.Context, req *pb_user.ListRegisterApplica
 			"$in": req.Status,
 		}
 	}
-	applications, total, err := model.CRegisterApplication.ListByPagination(ctx, utils.FormatPagination(condition, req.ListCondition))
+	applications, total, err := model_user.CRegisterApplication.ListByPagination(ctx, utils.FormatPagination(condition, req.ListCondition))
 	if err != nil {
 		return nil, err
 	}

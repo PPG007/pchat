@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"pchat/model"
+	model_common "pchat/model/common"
 	"pchat/repository/bson"
 	"pchat/utils/log"
 	"time"
@@ -59,18 +59,18 @@ func SyncHolidays() {
 	if err != nil {
 		return
 	}
-	var holidayModels []model.ChinaHoliday
+	var holidayModels []model_common.ChinaHoliday
 	for _, holiday := range holidays {
 		t, err := time.Parse("2006-01-02", holiday.Date)
 		if err != nil {
 			continue
 		}
-		holidayModels = append(holidayModels, model.ChinaHoliday{
+		holidayModels = append(holidayModels, model_common.ChinaHoliday{
 			Id:           bson.NewObjectId(),
 			IsWorkingDay: holiday.Status == STATUS_NORMAL_WORKING_DAY || holiday.Status == STATUS_WORKING_DAY,
 			DateStr:      holiday.Date,
 			Date:         t,
 		})
 	}
-	err = model.CChinaHoliday.BatchUpsert(ctx, holidayModels)
+	err = model_common.CChinaHoliday.BatchUpsert(ctx, holidayModels)
 }

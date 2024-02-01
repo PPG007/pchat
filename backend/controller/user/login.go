@@ -5,7 +5,7 @@ import (
 	"github.com/PPG007/copier"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"pchat/model"
+	model_user "pchat/model/user"
 	pb_user "pchat/pb/user"
 	"pchat/repository/bson"
 	"pchat/utils"
@@ -20,7 +20,7 @@ import (
 // @Success	200		{object}	pb_user.LoginResponse
 // @Param		body	body		pb_user.LoginRequest	true	"body"
 func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse, error) {
-	user, err := model.CUser.GetByEmail(ctx, req.Email, true)
+	user, err := model_user.CUser.GetByEmail(ctx, req.Email, true)
 	if err != nil {
 		return nil, err
 	}
@@ -28,14 +28,14 @@ func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse,
 	if err != nil {
 		return nil, err
 	}
-	token, err := model.SignToken(ctx, user, !user.Is2FAEnabled)
+	token, err := model_user.SignToken(ctx, user, !user.Is2FAEnabled)
 	if err != nil {
 		return nil, err
 	}
 	return formatLoginResponse(ctx, user, token, user.Is2FAEnabled), nil
 }
 
-func formatLoginResponse(ctx context.Context, user model.User, token string, need2FA bool) *pb_user.LoginResponse {
+func formatLoginResponse(ctx context.Context, user model_user.User, token string, need2FA bool) *pb_user.LoginResponse {
 	resp := &pb_user.LoginResponse{
 		Token:   token,
 		Need2FA: need2FA,
@@ -49,7 +49,7 @@ func formatLoginResponse(ctx context.Context, user model.User, token string, nee
 			Target: []string{"Permissions"},
 		},
 	}).RegisterTransformer("Permissions", func(roles []bson.ObjectId) []string {
-		permissions, err := model.CRole.GetPermissionsByIds(ctx, roles)
+		permissions, err := model_user.CRole.GetPermissionsByIds(ctx, roles)
 		if err != nil {
 			return nil
 		}

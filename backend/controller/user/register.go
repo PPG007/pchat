@@ -4,7 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/qiniu/qmgo"
-	"pchat/model"
+	"pchat/model/common"
+	model_user "pchat/model/user"
 	pb_user "pchat/pb/user"
 )
 
@@ -17,18 +18,18 @@ import (
 // @Param		body	body		pb_user.RegisterRequest	true	"body"
 // @Success	200		{object}	pb_user.RegisterResponse
 func register(ctx *gin.Context, req *pb_user.RegisterRequest) (*pb_user.RegisterResponse, error) {
-	_, err := model.CUser.GetByEmail(ctx, req.Email, false)
+	_, err := model_user.CUser.GetByEmail(ctx, req.Email, false)
 	if err == nil {
 		return nil, errors.New("user already exists")
 	}
 	if !errors.Is(err, qmgo.ErrNoSuchDocuments) {
 		return nil, err
 	}
-	setting, err := model.CSetting.Get(ctx)
+	setting, err := common.CSetting.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
-	err = model.CUser.CreateNew(ctx, req.Email, req.Password, req.Reason, setting.ChatSetting.MustBeApprovedBeforeRegister)
+	err = model_user.CUser.CreateNew(ctx, req.Email, req.Password, req.Reason, setting.ChatSetting.MustBeApprovedBeforeRegister)
 	if err != nil {
 		return nil, err
 	}
