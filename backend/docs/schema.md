@@ -228,3 +228,47 @@
   userId: "ObjectId"
 }
 ```
+
+
+## Todo
+
+### todo
+
+```json5
+{
+  id: 'ObjectId',
+  createdAt: 'DateTime',
+  updatedAt: 'DateTime',
+  isDeleted: 'Boolean',
+  needRemind: 'Boolean',
+  content: 'String',
+  userId: 'ObjectId',
+  images: '[String]',
+  remindSetting: {
+    remindAt: 'DateTime',
+    isRepeatable: 'Boolean',
+    lastRemindAt: 'DateTime',
+    repeatType: 'String',
+    repeatDateOffset: 'Long',
+  }
+}
+```
+
+### todoRecord
+
+```json5
+{
+  id: 'ObjectId',
+  isDeleted: 'Boolean',
+  createdAt: 'DateTime',
+  updatedAt: 'DateTime',
+  remindAt: 'DateTime',
+  hasBeenDone: 'Boolean',
+  content: 'String',
+  todoId: 'ObjectId',
+  userId: 'ObjectId',
+  hasBeenReminded: 'Boolean',
+  images: '[String]',
+  doneAt: 'DateTime',
+}
+```
