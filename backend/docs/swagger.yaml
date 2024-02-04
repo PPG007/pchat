@@ -1,5 +1,10 @@
 basePath: /v1
 definitions:
+  common.BoolValue:
+    properties:
+      value:
+        type: boolean
+    type: object
   common.ListCondition:
     properties:
       orderBy:
@@ -24,6 +29,80 @@ definitions:
   common.StringValue:
     properties:
       value:
+        type: string
+    type: object
+  pchat_pb_todo.RemindSetting:
+    properties:
+      isRepeatable:
+        description: 是否重复
+        type: boolean
+      remindAt:
+        description: 提醒时间
+        type: string
+      repeatDateOffset:
+        description: 重复间隔
+        type: integer
+      repeatType:
+        description: 重复类型，day（天）、week（周）、month（月）、year（年）、holiday（节假日）、weekday（工作日）
+        type: string
+    type: object
+  todo.ListTodoRecordsRequest:
+    properties:
+      hasBeenDone:
+        allOf:
+        - $ref: '#/definitions/common.BoolValue'
+        description: 是否已完成
+      listCondition:
+        allOf:
+        - $ref: '#/definitions/common.ListCondition'
+        description: 分页
+      searchKey:
+        description: 关键字
+        type: string
+    type: object
+  todo.ListTodoRecordsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/todo.TodoRecordDetail'
+        type: array
+      total:
+        type: integer
+    type: object
+  todo.TodoRecordDetail:
+    properties:
+      content:
+        description: 内容
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      doneAt:
+        description: 完成时间
+        type: string
+      hasBeenDone:
+        description: 是否已完成
+        type: boolean
+      id:
+        description: id
+        type: string
+      images:
+        description: 图片
+        items:
+          type: string
+        type: array
+      remindSetting:
+        allOf:
+        - $ref: '#/definitions/pchat_pb_todo.RemindSetting'
+        description: 提醒时间
+      todoId:
+        description: 关联的 todo.id
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+      userId:
+        description: 关联 user
         type: string
     type: object
   user.AuditRegisterApplicationRequest:
@@ -169,6 +248,27 @@ info:
   title: PChat API
   version: "1.0"
 paths:
+  /todos/records:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/todo.ListTodoRecordsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todo.ListTodoRecordsResponse'
+      summary: 获取待办列表
+      tags:
+      - 待办管理
   /users/{id}:
     put:
       consumes:

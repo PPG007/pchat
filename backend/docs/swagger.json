@@ -8,6 +8,39 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/todos/records": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办管理"
+                ],
+                "summary": "获取待办列表",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/todo.ListTodoRecordsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/todo.ListTodoRecordsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/approve": {
             "post": {
                 "consumes": [
@@ -272,6 +305,14 @@
         }
     },
     "definitions": {
+        "common.BoolValue": {
+            "type": "object",
+            "properties": {
+                "value": {
+                    "type": "boolean"
+                }
+            }
+        },
         "common.ListCondition": {
             "type": "object",
             "properties": {
@@ -307,6 +348,118 @@
             "type": "object",
             "properties": {
                 "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "pchat_pb_todo.RemindSetting": {
+            "type": "object",
+            "properties": {
+                "isRepeatable": {
+                    "description": "是否重复",
+                    "type": "boolean"
+                },
+                "remindAt": {
+                    "description": "提醒时间",
+                    "type": "string"
+                },
+                "repeatDateOffset": {
+                    "description": "重复间隔",
+                    "type": "integer"
+                },
+                "repeatType": {
+                    "description": "重复类型，day（天）、week（周）、month（月）、year（年）、holiday（节假日）、weekday（工作日）",
+                    "type": "string"
+                }
+            }
+        },
+        "todo.ListTodoRecordsRequest": {
+            "type": "object",
+            "properties": {
+                "hasBeenDone": {
+                    "description": "是否已完成",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/common.BoolValue"
+                        }
+                    ]
+                },
+                "listCondition": {
+                    "description": "分页",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/common.ListCondition"
+                        }
+                    ]
+                },
+                "searchKey": {
+                    "description": "关键字",
+                    "type": "string"
+                }
+            }
+        },
+        "todo.ListTodoRecordsResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/todo.TodoRecordDetail"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "todo.TodoRecordDetail": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "doneAt": {
+                    "description": "完成时间",
+                    "type": "string"
+                },
+                "hasBeenDone": {
+                    "description": "是否已完成",
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "images": {
+                    "description": "图片",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "remindSetting": {
+                    "description": "提醒时间",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/pchat_pb_todo.RemindSetting"
+                        }
+                    ]
+                },
+                "todoId": {
+                    "description": "关联的 todo.id",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "关联 user",
                     "type": "string"
                 }
             }

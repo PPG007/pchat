@@ -25,16 +25,23 @@ message TodoRecordDetail {
   repeated string images = 5;
   // 是否已完成
   bool hasBeenDone = 6;
-  // 是否需要提醒
-  bool needRemind = 7;
   // 提醒时间
-  string remindAt = 8;
+  RemindSetting remindSetting = 7;
   // 关联的 todo.id
-  string todoId = 9;
-  // 是否可重复
-  bool repeatable = 10;
-  // 重复类型
-  string repeatType = 11;
+  string todoId = 8;
+  // 关联 user
+  string userId = 9;
+  // 完成时间
+  string doneAt = 10;
+}
+
+message RemindSetting {
+  // 提醒时间
+  string remindAt = 1;
+  // 是否重复
+  bool isRepeatable = 2;
+  // 重复类型，day（天）、week（周）、month（月）、year（年）、holiday（节假日）、weekday（工作日）
+  string repeatType = 3;
   // 重复间隔
-  int64 repeatOffset = 12;
+  int64 repeatDateOffset = 4;
 }

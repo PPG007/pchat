@@ -11,6 +11,7 @@ import (
 	"pchat/repository/bson"
 	"pchat/utils/log"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -134,4 +135,32 @@ func MarshalInterfaceToString(obj interface{}) string {
 		return ""
 	}
 	return string(b)
+}
+
+func FormatRegexStr(str string) string {
+	replacers := []string{
+		"\\", "\\\\",
+		"*", "\\*",
+		".", "\\.",
+		"?", "\\?",
+		"+", "\\+",
+		"$", "\\$",
+		"^", "\\^",
+		"[", "\\[",
+		"]", "\\]",
+		"(", "\\(",
+		")", "\\)",
+		"{", "\\{",
+		"}", "\\}",
+		"|", "\\|",
+		"/", "\\/",
+	}
+	return strings.NewReplacer(replacers...).Replace(str)
+}
+
+func GetFuzzySearchStrRegex(str string) bson.Regex {
+	return bson.Regex{
+		Pattern: FormatRegexStr(str),
+		Options: "i",
+	}
 }

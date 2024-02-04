@@ -10,6 +10,8 @@ type M = primitive.M
 
 type ObjectId = primitive.ObjectID
 
+type Regex = primitive.Regex
+
 var NilObjectId = primitive.NilObjectID
 
 func IsObjectIdEqual(a, b ObjectId) bool {

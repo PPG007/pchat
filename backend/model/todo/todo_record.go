@@ -1,6 +1,8 @@
 package todo
 
 import (
+	"context"
+	"pchat/repository"
 	"pchat/repository/bson"
 	"time"
 )
@@ -26,4 +28,10 @@ type TodoRecord struct {
 	HasBeenReminded bool          `bson:"hasBeenReminded"`
 	DoneAt          time.Time     `bson:"doneAt,omitempty"`
 	RemindAt        time.Time     `bson:"remindAt,omitempty"`
+}
+
+func (TodoRecord) ListByPagination(ctx context.Context, pagination repository.Pagination) (int64, []TodoRecord, error) {
+	var records []TodoRecord
+	total, err := repository.FindAllWithPage(ctx, C_TODO_RECORD, pagination, &records)
+	return total, records, err
 }

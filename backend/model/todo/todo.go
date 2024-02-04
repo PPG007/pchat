@@ -1,6 +1,8 @@
 package todo
 
 import (
+	"context"
+	"pchat/repository"
 	"pchat/repository/bson"
 	"time"
 )
@@ -30,5 +32,16 @@ type RemindSetting struct {
 	IsRepeatable     bool      `bson:"isRepeatable"`
 	LastRemindAt     time.Time `bson:"lastRemindAt,omitempty"`
 	RepeatType       string    `bson:"repeatType"`
-	RepeatDateOffset int       `bson:"repeatDateOffset"`
+	RepeatDateOffset int64     `bson:"repeatDateOffset"`
+}
+
+func (Todo) ListByIds(ctx context.Context, ids []bson.ObjectId) ([]Todo, error) {
+	var todos []Todo
+	condition := bson.M{
+		"_id": bson.M{
+			"$in": ids,
+		},
+	}
+	err := repository.FindAll(ctx, C_TODO, condition, &todos)
+	return todos, err
 }
