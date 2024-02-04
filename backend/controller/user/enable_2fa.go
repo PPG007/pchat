@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
 	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
@@ -15,7 +15,7 @@ import (
 // @Accept		json
 // @Produce	json
 // @Success	200	{object}	pb_user.Enable2FAResponse
-func enable2FA(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_user.Enable2FAResponse, error) {
+func enable2FA(ctx context.Context, req *pb_common.EmptyRequest) (*pb_user.Enable2FAResponse, error) {
 	url, recoveryCodes, err := model_user.CUser.Enable2FA(ctx, utils.GetUserIdAsObjectId(ctx))
 	if err != nil {
 		return nil, err

@@ -1,8 +1,8 @@
 package user
 
 import (
+	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
 	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	pb_user "pchat/pb/user"
@@ -17,7 +17,7 @@ import (
 // @Produce	json
 // @Param		body	body		pb_common.StringValue	true	"body"
 // @Success	200		{object}	pb_user.LoginResponse
-func validOTP(ctx *gin.Context, req *pb_common.StringValue) (*pb_user.LoginResponse, error) {
+func validOTP(ctx context.Context, req *pb_common.StringValue) (*pb_user.LoginResponse, error) {
 	user, err := model_user.CUser.GetById(ctx, utils.GetUserIdAsObjectId(ctx))
 	if err != nil {
 		return nil, err

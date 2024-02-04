@@ -1,8 +1,8 @@
 package user
 
 import (
+	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"github.com/qiniu/qmgo"
 	"pchat/model/common"
 	model_user "pchat/model/user"
@@ -17,7 +17,7 @@ import (
 // @Produce	json
 // @Param		body	body		pb_user.RegisterRequest	true	"body"
 // @Success	200		{object}	pb_user.RegisterResponse
-func register(ctx *gin.Context, req *pb_user.RegisterRequest) (*pb_user.RegisterResponse, error) {
+func register(ctx context.Context, req *pb_user.RegisterRequest) (*pb_user.RegisterResponse, error) {
 	_, err := model_user.CUser.GetByEmail(ctx, req.Email, false)
 	if err == nil {
 		return nil, errors.New("user already exists")

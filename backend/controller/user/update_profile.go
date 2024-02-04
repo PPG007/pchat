@@ -1,8 +1,8 @@
 package user
 
 import (
+	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	model_user "pchat/model/user"
 	"pchat/utils"
@@ -21,7 +21,7 @@ import (
 // @Param		id		path		string							true	"占位符"
 // @Param		body	body		pb_user.UpdateProfileRequest	true	"body"
 // @Success	200		{object}	nil
-func updateProfile(ctx *gin.Context, req *pb_user.UpdateProfileRequest) (*pb_common.EmptyResponse, error) {
+func updateProfile(ctx context.Context, req *pb_user.UpdateProfileRequest) (*pb_common.EmptyResponse, error) {
 	setter := bson.M{}
 	id := utils.GetUserId(ctx)
 	if !bson.IsObjectIdHex(id) {

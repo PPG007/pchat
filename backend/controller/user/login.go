@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"github.com/PPG007/copier"
-	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	model_user "pchat/model/user"
 	pb_user "pchat/pb/user"
@@ -19,7 +18,7 @@ import (
 // @Produce	json
 // @Success	200		{object}	pb_user.LoginResponse
 // @Param		body	body		pb_user.LoginRequest	true	"body"
-func login(ctx *gin.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse, error) {
+func login(ctx context.Context, req *pb_user.LoginRequest) (*pb_user.LoginResponse, error) {
 	user, err := model_user.CUser.GetByEmail(ctx, req.Email, true)
 	if err != nil {
 		return nil, err

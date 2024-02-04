@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
 	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	"pchat/utils"
@@ -14,7 +14,7 @@ import (
 // @Accept		json
 // @Produce	json
 // @Success	200	{object}	pb_common.StringArrayValue
-func renewRecoveryCodes(ctx *gin.Context, req *pb_common.EmptyRequest) (*pb_common.StringArrayValue, error) {
+func renewRecoveryCodes(ctx context.Context, req *pb_common.EmptyRequest) (*pb_common.StringArrayValue, error) {
 	codes, err := model_user.CUser.GenerateRecoveryCodes(ctx, utils.GetUserIdAsObjectId(ctx), true)
 	if err != nil {
 		return nil, err

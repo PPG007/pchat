@@ -1,6 +1,7 @@
 package core
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/joncalhoun/qson"
 	"google.golang.org/protobuf/proto"
@@ -9,7 +10,7 @@ import (
 	"pchat/utils"
 )
 
-type Handler[Request, Response proto.Message] func(*gin.Context, Request) (Response, error)
+type Handler[Request, Response proto.Message] func(context.Context, Request) (Response, error)
 
 type GinController = func(*gin.Context)
 
