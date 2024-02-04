@@ -9,5 +9,9 @@ message StringValue {
 }
 
 message StringArrayValue {
-  repeated string values = 2;
+  repeated string values = 1;
+}
+
+message BoolValue {
+  bool value = 1;
 }

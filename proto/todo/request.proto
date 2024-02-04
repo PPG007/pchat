@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pchat.todo;
+
+option go_package = "pchat/pb/todo";
+
+import "common/request.proto";
+import "common/types.proto";
+
+message ListTodoRecordsRequest {
+  // 分页
+  pchat.common.ListCondition listCondition = 1;
+  // 是否已完成
+  pchat.common.BoolValue hasBeenDone = 2;
+  // 关键字
+  string searchKey = 3;
+}

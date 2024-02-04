@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package pchat.todo;
+
+option go_package = "pchat/pb/todo";
+
+import "common/request.proto";
+import "common/types.proto";
+
+message ListTodoRecordsResponse {
+  int64 total = 1;
+  repeated TodoRecordDetail items = 2;
+}
+
+message TodoRecordDetail {
+  // id
+  string id = 1;
+  // 创建时间
+  string createdAt = 2;
+  // 更新时间
+  string updatedAt = 3;
+  // 内容
+  string content = 4;
+  // 图片
+  repeated string images = 5;
+  // 是否已完成
+  bool hasBeenDone = 6;
+  // 是否需要提醒
+  bool needRemind = 7;
+  // 提醒时间
+  string remindAt = 8;
+  // 关联的 todo.id
+  string todoId = 9;
+  // 是否可重复
+  bool repeatable = 10;
+  // 重复类型
+  string repeatType = 11;
+  // 重复间隔
+  int64 repeatOffset = 12;
+}
