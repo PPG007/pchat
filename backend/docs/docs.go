@@ -15,6 +15,36 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/todos": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办管理"
+                ],
+                "summary": "创建待办",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/todo.CreateTodoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/todos/records": {
             "get": {
                 "consumes": [
@@ -377,6 +407,34 @@ const docTemplate = `{
                 "repeatType": {
                     "description": "重复类型，day（天）、week（周）、month（月）、year（年）、holiday（节假日）、weekday（工作日）",
                     "type": "string"
+                }
+            }
+        },
+        "todo.CreateTodoRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "images": {
+                    "description": "图片",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "needRemind": {
+                    "description": "是否需要提醒",
+                    "type": "boolean"
+                },
+                "remindSetting": {
+                    "description": "提醒设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/pchat_pb_todo.RemindSetting"
+                        }
+                    ]
                 }
             }
         },

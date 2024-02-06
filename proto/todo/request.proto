@@ -6,6 +6,7 @@ option go_package = "pchat/pb/todo";
 
 import "common/request.proto";
 import "common/types.proto";
+import "todo/response.proto";
 
 message ListTodoRecordsRequest {
   // 分页
@@ -14,4 +15,15 @@ message ListTodoRecordsRequest {
   pchat.common.BoolValue hasBeenDone = 2;
   // 关键字
   string searchKey = 3;
+}
+
+message CreateTodoRequest {
+  // 内容
+  string content = 1;
+  // 图片
+  repeated string images = 2;
+  // 是否需要提醒
+  bool needRemind = 3;
+  // 提醒设置
+  RemindSetting remindSetting = 4;
 }

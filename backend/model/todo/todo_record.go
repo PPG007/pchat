@@ -35,3 +35,7 @@ func (TodoRecord) ListByPagination(ctx context.Context, pagination repository.Pa
 	total, err := repository.FindAllWithPage(ctx, C_TODO_RECORD, pagination, &records)
 	return total, records, err
 }
+
+func (r TodoRecord) Create(ctx context.Context) error {
+	return repository.Insert(ctx, C_TODO_RECORD, r)
+}

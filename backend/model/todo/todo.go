@@ -4,6 +4,7 @@ import (
 	"context"
 	"pchat/repository"
 	"pchat/repository/bson"
+	"pchat/utils"
 	"time"
 )
 
@@ -44,4 +45,33 @@ func (Todo) ListByIds(ctx context.Context, ids []bson.ObjectId) ([]Todo, error) 
 	}
 	err := repository.FindAll(ctx, C_TODO, condition, &todos)
 	return todos, err
+}
+
+func (t Todo) Create(ctx context.Context) error {
+	t.Id = bson.NewObjectId()
+	t.CreatedAt = time.Now()
+	t.UpdatedAt = t.CreatedAt
+	t.UserId = utils.GetUserIdAsObjectId(ctx)
+	if !t.RemindSetting.RemindAt.IsZero() {
+		t.NeedRemind = true
+	}
+	if err := repository.Insert(ctx, C_TODO, t); err != nil {
+		return err
+	}
+	return t.GenRecord(ctx, t.RemindSetting.RemindAt)
+}
+
+func (t Todo) GenRecord(ctx context.Context, remindAt time.Time) error {
+	record := TodoRecord{
+		Id:        bson.ObjectId{},
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		IsDeleted: false,
+		TodoId:    t.Id,
+		UserId:    t.UserId,
+		Content:   t.Content,
+		Images:    t.Images,
+		RemindAt:  remindAt,
+	}
+	return record.Create(ctx)
 }
