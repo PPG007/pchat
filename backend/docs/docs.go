@@ -45,6 +45,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/todos/:id": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办管理"
+                ],
+                "summary": "删除待办",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.DetailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/todos/records": {
             "get": {
                 "consumes": [
@@ -347,6 +377,15 @@ const docTemplate = `{
             "properties": {
                 "value": {
                     "type": "boolean"
+                }
+            }
+        },
+        "common.DetailRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "@gotags: valid:\"required,objectId\"",
+                    "type": "string"
                 }
             }
         },

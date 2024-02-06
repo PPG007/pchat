@@ -39,3 +39,15 @@ func (TodoRecord) ListByPagination(ctx context.Context, pagination repository.Pa
 func (r TodoRecord) Create(ctx context.Context) error {
 	return repository.Insert(ctx, C_TODO_RECORD, r)
 }
+
+func (TodoRecord) DeleteByTodoId(ctx context.Context, todoId bson.ObjectId, all bool) error {
+	condition := bson.M{
+		"todoId":      todoId,
+		"hasBeenDone": false,
+	}
+	if all {
+		delete(condition, "hasBeenDone")
+	}
+	_, err := repository.UpdateAll(ctx, C_TODO_RECORD, condition, bson.M{"$set": bson.M{"isDeleted": true}})
+	return err
+}

@@ -16,3 +16,7 @@ message ListCondition {
 message EmptyRequest {
 
 }
+
+message DetailRequest {
+  string id = 1; // @gotags: valid:"required,objectId"
+}

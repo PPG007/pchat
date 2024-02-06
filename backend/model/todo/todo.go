@@ -75,3 +75,13 @@ func (t Todo) GenRecord(ctx context.Context, remindAt time.Time) error {
 	}
 	return record.Create(ctx)
 }
+
+func (Todo) DeleteById(ctx context.Context, id bson.ObjectId) error {
+	condition := bson.M{
+		"_id": id,
+	}
+	if err := repository.UpdateOne(ctx, C_TODO, condition, bson.M{"$set": bson.M{"isDeleted": true}}); err != nil {
+		return err
+	}
+	return CTodoRecord.DeleteByTodoId(ctx, id, false)
+}

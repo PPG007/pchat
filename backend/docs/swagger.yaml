@@ -5,6 +5,12 @@ definitions:
       value:
         type: boolean
     type: object
+  common.DetailRequest:
+    properties:
+      id:
+        description: '@gotags: valid:"required,objectId"'
+        type: string
+    type: object
   common.ListCondition:
     properties:
       orderBy:
@@ -283,6 +289,25 @@ paths:
         "200":
           description: OK
       summary: 创建待办
+      tags:
+      - 待办管理
+  /todos/:id:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/common.DetailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 删除待办
       tags:
       - 待办管理
   /todos/records:
