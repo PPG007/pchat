@@ -9,7 +9,6 @@ import (
 	"google.golang.org/protobuf/proto"
 	"io"
 	"net/http"
-	pb_common "pchat/pb/common"
 	"pchat/utils"
 )
 
@@ -85,10 +84,4 @@ func wrapController[Request, Response proto.Message](handler Handler[Request, Re
 		}
 		ctx.JSON(http.StatusOK, resp)
 	}
-}
-
-func ResponseError(ctx *gin.Context, err error) {
-	ctx.JSON(http.StatusBadRequest, pb_common.ErrorResponse{
-		Message: err.Error(),
-	})
 }

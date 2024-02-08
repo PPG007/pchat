@@ -7,3 +7,7 @@ user:
   prefix: 2000
   codes:
     - notFound
+todo:
+  prefix: 3000
+  codes:
+    - cannotEdit

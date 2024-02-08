@@ -2,7 +2,7 @@ package todo
 
 import (
 	"context"
-	"errors"
+	"pchat/errors"
 	model_todo "pchat/model/todo"
 	pb_common "pchat/pb/common"
 	pb_todo "pchat/pb/todo"
@@ -43,7 +43,7 @@ func upsertTodo(ctx context.Context, req *pb_todo.UpsertTodoRequest) (*pb_common
 		return nil, err
 	}
 	if len(records) > 1 {
-		return nil, errors.New("invalid todo")
+		return nil, errors.New(errors.ERR_TODO_CANNOT_EDIT, "")
 	}
 	if err := utils.Copier().From(req).To(&todo); err != nil {
 		return nil, err

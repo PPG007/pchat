@@ -5,14 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	"net/http"
-	pb_common "pchat/pb/common"
+	"pchat/errors"
 	"pchat/repository/bson"
 )
 
 func ResponseError(ctx *gin.Context, err error) {
-	ctx.JSON(http.StatusBadRequest, pb_common.ErrorResponse{
-		Message: err.Error(),
-	})
+	ctx.JSON(http.StatusBadRequest, errors.ToCommonError(err))
 }
 
 func MergeEngine(main, sub *gin.Engine) {
