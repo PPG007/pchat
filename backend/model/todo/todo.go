@@ -2,6 +2,7 @@ package todo
 
 import (
 	"context"
+	"pchat/model"
 	"pchat/repository"
 	"pchat/repository/bson"
 	"pchat/utils"
@@ -34,6 +35,13 @@ type RemindSetting struct {
 	LastRemindAt     time.Time `bson:"lastRemindAt,omitempty"`
 	RepeatType       string    `bson:"repeatType"`
 	RepeatDateOffset int64     `bson:"repeatDateOffset"`
+}
+
+func (Todo) GetById(ctx context.Context, id bson.ObjectId) (Todo, error) {
+	condition := model.GenIdCondition(id)
+	todo := Todo{}
+	err := repository.FindOne(ctx, C_TODO, condition, &todo)
+	return todo, err
 }
 
 func (Todo) ListByIds(ctx context.Context, ids []bson.ObjectId) ([]Todo, error) {
@@ -84,4 +92,18 @@ func (Todo) DeleteById(ctx context.Context, id bson.ObjectId) error {
 		return err
 	}
 	return CTodoRecord.DeleteByTodoId(ctx, id, false)
+}
+
+func (t Todo) Update(ctx context.Context) error {
+	condition := model.GenIdCondition(t.Id)
+	updater := bson.M{
+		"$set": bson.M{
+			"updatedAt":     time.Now(),
+			"needRemind":    t.NeedRemind,
+			"content":       t.Content,
+			"images":        t.Images,
+			"remindSetting": t.RemindSetting,
+		},
+	}
+	return repository.UpdateOne(ctx, C_TODO, condition, updater)
 }

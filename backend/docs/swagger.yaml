@@ -52,24 +52,6 @@ definitions:
         description: 重复类型，day（天）、week（周）、month（月）、year（年）、holiday（节假日）、weekday（工作日）
         type: string
     type: object
-  todo.CreateTodoRequest:
-    properties:
-      content:
-        description: 内容
-        type: string
-      images:
-        description: 图片
-        items:
-          type: string
-        type: array
-      needRemind:
-        description: 是否需要提醒
-        type: boolean
-      remindSetting:
-        allOf:
-        - $ref: '#/definitions/pchat_pb_todo.RemindSetting'
-        description: 提醒设置
-    type: object
   todo.ListTodoRecordsRequest:
     properties:
       hasBeenDone:
@@ -128,6 +110,27 @@ definitions:
       userId:
         description: 关联 user
         type: string
+    type: object
+  todo.UpsertTodoRequest:
+    properties:
+      content:
+        description: 内容
+        type: string
+      id:
+        description: id
+        type: string
+      images:
+        description: 图片
+        items:
+          type: string
+        type: array
+      needRemind:
+        description: 是否需要提醒
+        type: boolean
+      remindSetting:
+        allOf:
+        - $ref: '#/definitions/pchat_pb_todo.RemindSetting'
+        description: 提醒设置
     type: object
   user.AuditRegisterApplicationRequest:
     properties:
@@ -282,13 +285,13 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/todo.CreateTodoRequest'
+          $ref: '#/definitions/todo.UpsertTodoRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-      summary: 创建待办
+      summary: 创建、修改待办
       tags:
       - 待办管理
   /todos/:id:

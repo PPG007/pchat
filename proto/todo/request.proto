@@ -17,13 +17,15 @@ message ListTodoRecordsRequest {
   string searchKey = 3;
 }
 
-message CreateTodoRequest {
+message UpsertTodoRequest {
+  // id
+  string id = 1; // @gotags: valid:"objectId"
   // 内容
-  string content = 1;
+  string content = 2;
   // 图片
-  repeated string images = 2;
+  repeated string images = 3;
   // 是否需要提醒
-  bool needRemind = 3;
+  bool needRemind = 4;
   // 提醒设置
-  RemindSetting remindSetting = 4;
+  RemindSetting remindSetting = 5;
 }

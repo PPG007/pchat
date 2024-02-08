@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "待办管理"
                 ],
-                "summary": "创建待办",
+                "summary": "创建、修改待办",
                 "parameters": [
                     {
                         "description": "body",
@@ -34,7 +34,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/todo.CreateTodoRequest"
+                            "$ref": "#/definitions/todo.UpsertTodoRequest"
                         }
                     }
                 ],
@@ -449,34 +449,6 @@ const docTemplate = `{
                 }
             }
         },
-        "todo.CreateTodoRequest": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "description": "内容",
-                    "type": "string"
-                },
-                "images": {
-                    "description": "图片",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "needRemind": {
-                    "description": "是否需要提醒",
-                    "type": "boolean"
-                },
-                "remindSetting": {
-                    "description": "提醒设置",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/pchat_pb_todo.RemindSetting"
-                        }
-                    ]
-                }
-            }
-        },
         "todo.ListTodoRecordsRequest": {
             "type": "object",
             "properties": {
@@ -565,6 +537,38 @@ const docTemplate = `{
                 "userId": {
                     "description": "关联 user",
                     "type": "string"
+                }
+            }
+        },
+        "todo.UpsertTodoRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "images": {
+                    "description": "图片",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "needRemind": {
+                    "description": "是否需要提醒",
+                    "type": "boolean"
+                },
+                "remindSetting": {
+                    "description": "提醒设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/pchat_pb_todo.RemindSetting"
+                        }
+                    ]
                 }
             }
         },
