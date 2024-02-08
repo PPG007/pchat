@@ -3,21 +3,21 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"log"
+	"pchat/controller/todo"
 	"pchat/controller/user"
 	"pchat/controller/websocket"
 	"pchat/utils"
 )
 
-func GetRoot(isDebug bool) *gin.Engine {
-	root := gin.New()
+func AppendRoutes(root *gin.Engine, isDebug bool) {
 	utils.MergeEngines(root,
 		user.Group.Engine(),
+		todo.Group.Engine(),
 		websocket.Group.Engine(),
 	)
 	if isDebug {
 		printRoutes(root)
 	}
-	return root
 }
 
 func printRoutes(root *gin.Engine) {

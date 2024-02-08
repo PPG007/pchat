@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -41,9 +42,10 @@ func loadConfig() {
 }
 
 func startGin() {
-	e := controller.GetRoot(isDebug)
-	middleware.RegisterMiddlewares(e)
-	err := e.Run(fmt.Sprintf("%s:%d", viper.GetString("httpHost"), viper.GetInt("httpPort")))
+	root := gin.New()
+	middleware.RegisterMiddlewares(root)
+	controller.AppendRoutes(root, isDebug)
+	err := root.Run(fmt.Sprintf("%s:%d", viper.GetString("httpHost"), viper.GetInt("httpPort")))
 	if err != nil {
 		panic(err)
 	}

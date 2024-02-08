@@ -164,3 +164,13 @@ func GetFuzzySearchStrRegex(str string) bson.Regex {
 		Options: "i",
 	}
 }
+
+func UppercaseFirst(word string) string {
+	length := len(word)
+	if length == 0 {
+		return ""
+	}
+	remaining := word[1:]
+	first := strings.ToUpper(string(word[0]))
+	return strings.Join([]string{first, remaining}, "")
+}

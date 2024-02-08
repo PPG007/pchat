@@ -21,7 +21,8 @@ var (
 )
 
 func auth(ctx *gin.Context) {
-	if utils.StrInArray(ctx.FullPath(), &noAuthPaths) {
+	fullPath := ctx.FullPath()
+	if utils.StrInArray(fullPath, &noAuthPaths) {
 		ctx.Next()
 		return
 	}

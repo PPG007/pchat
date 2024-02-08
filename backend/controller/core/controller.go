@@ -2,9 +2,12 @@ package core
 
 import (
 	"context"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/joncalhoun/qson"
+	jsoniter "github.com/json-iterator/go"
 	"google.golang.org/protobuf/proto"
+	"io"
 	"net/http"
 	pb_common "pchat/pb/common"
 	"pchat/utils"
@@ -28,20 +31,39 @@ func NewController[Request, Response proto.Message](path, method string, handler
 	}
 }
 
+func newReq[T proto.Message]() T {
+	return proto.Clone(*(new(T))).ProtoReflect().New().Interface().(T)
+}
+
 func getRequestData[T proto.Message](ctx *gin.Context) (*T, error) {
 	var (
-		err error
-		req = new(T)
+		req = newReq[T]()
 	)
-	if ctx.Request.Method == http.MethodGet {
-		err = qson.Unmarshal(req, ctx.Request.URL.RawQuery)
-	} else {
-		err = ctx.ShouldBindJSON(req)
+
+	if query := ctx.Request.URL.RawQuery; query != "" {
+		data, err := qson.ToJSON(query)
+		if err != nil {
+			return nil, err
+		}
+		if err := jsoniter.Unmarshal(data, req); err != nil {
+			return nil, err
+		}
 	}
-	if err != nil {
-		return nil, err
+	if ctx.Request.ContentLength > 0 {
+		if err := ctx.ShouldBindJSON(req); err != nil && !errors.Is(err, io.EOF) {
+			return nil, err
+		}
 	}
-	return req, nil
+	if params := ctx.Params; len(params) > 0 {
+		data := make(map[string]string, len(params))
+		for _, param := range params {
+			data[param.Key] = param.Value
+		}
+		if err := utils.SetStructFields(req, data); err != nil {
+			return nil, err
+		}
+	}
+	return &req, nil
 }
 
 func wrapController[Request, Response proto.Message](handler Handler[Request, Response]) GinController {
@@ -51,7 +73,7 @@ func wrapController[Request, Response proto.Message](handler Handler[Request, Re
 			utils.ResponseError(ctx, err)
 			return
 		}
-		err = utils.ValidateRequest(req)
+		err = utils.ValidateRequest(*req)
 		if err != nil {
 			utils.ResponseError(ctx, err)
 			return

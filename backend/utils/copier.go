@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"errors"
+	"fmt"
 	"github.com/PPG007/copier"
+	"github.com/spf13/cast"
 	"pchat/repository/bson"
 	"reflect"
 )
@@ -44,4 +47,41 @@ func Copier() *copier.Copier {
 		RegisterConverter(objectIdStringConverter).
 		RegisterConverter(stringObjectIdConverter)
 	return c
+}
+
+func SetStructFields(class interface{}, fields map[string]string) error {
+	v := reflect.ValueOf(class)
+	if v.Type().Kind() != reflect.Ptr {
+		return errors.New("struct must be pointer")
+	}
+	v = v.Elem()
+	t := v.Type()
+	for name, value := range fields {
+		name = UppercaseFirst(name)
+		if field, ok := t.FieldByName(name); ok {
+			fromV := reflect.ValueOf(value)
+			target := v.FieldByName(name)
+			if fromV.CanConvert(t) {
+				target.Set(fromV.Convert(t))
+				continue
+			}
+			switch target.Type().Kind() {
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				v, err := cast.ToInt64E(value)
+				if err != nil {
+					return err
+				}
+				target.SetInt(v)
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				v, err := cast.ToUint64E(value)
+				if err != nil {
+					return err
+				}
+				target.SetUint(v)
+			default:
+				return errors.New(fmt.Sprintf("cannot convert %s from string to %s", field.Name, target.Type().Kind().String()))
+			}
+		}
+	}
+	return nil
 }
