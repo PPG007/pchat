@@ -2,6 +2,7 @@ package todo
 
 import (
 	"context"
+	"github.com/qiniu/qmgo"
 	"pchat/model"
 	"pchat/repository"
 	"pchat/repository/bson"
@@ -74,7 +75,20 @@ func (TodoRecord) MarkAsDone(ctx context.Context, id bson.ObjectId) error {
 			"updatedAt":   time.Now(),
 		},
 	}
-	return repository.UpdateOne(ctx, C_TODO_RECORD, condition, updater)
+	change := qmgo.Change{
+		Update:    updater,
+		ReturnNew: true,
+	}
+	record := TodoRecord{}
+	err := repository.FindAndApply(ctx, C_TODO_RECORD, condition, change, &record)
+	if err != nil {
+		return err
+	}
+	todo, err := CTodo.GetById(ctx, record.TodoId)
+	if err != nil {
+		return err
+	}
+	return todo.CreateNextRecord(ctx)
 }
 
 func (TodoRecord) MarkAsUndo(ctx context.Context, id bson.ObjectId) error {

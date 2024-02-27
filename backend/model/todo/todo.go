@@ -74,15 +74,11 @@ func (t Todo) Create(ctx context.Context) error {
 	if err := repository.Insert(ctx, C_TODO, t); err != nil {
 		return err
 	}
-	record := t.GenRecord(ctx)
-	if err := record.Create(ctx); err != nil {
-		return err
-	}
-	return t.UpdateLastRemindAt(ctx, record.RemindAt)
+	return t.CreateNextRecord(ctx)
 }
 
-func (t Todo) GenRecord(ctx context.Context) TodoRecord {
-	return TodoRecord{
+func (t Todo) CreateNextRecord(ctx context.Context) error {
+	record := TodoRecord{
 		Id:        bson.ObjectId{},
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -93,6 +89,11 @@ func (t Todo) GenRecord(ctx context.Context) TodoRecord {
 		Images:    t.Images,
 		RemindAt:  t.RemindSetting.GetNextRemindAt(ctx),
 	}
+	err := record.Create(ctx)
+	if err != nil {
+		return err
+	}
+	return t.UpdateLastRemindAt(ctx, record.RemindAt)
 }
 
 func (Todo) DeleteById(ctx context.Context, id bson.ObjectId) error {
