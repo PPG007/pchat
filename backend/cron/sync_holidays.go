@@ -29,11 +29,15 @@ type Holiday struct {
 }
 
 func init() {
-	SyncHolidays()
+	jobs = append(jobs, cronJob{
+		Name: "SyncHolidays",
+		Spec: "0 0 1 * *",
+		Fn:   SyncHolidays,
+	})
+	SyncHolidays(context.Background())
 }
 
-func SyncHolidays() {
-	ctx := context.Background()
+func SyncHolidays(ctx context.Context) error {
 	var (
 		err error
 	)
@@ -47,17 +51,17 @@ func SyncHolidays() {
 	url := fmt.Sprintf(HOLIDAY_URL, time.Now().Year())
 	resp, err := http.Get(url)
 	if err != nil {
-		return
+		return err
 	}
 	defer resp.Body.Close()
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return
+		return err
 	}
 	var holidays []Holiday
 	err = json.Unmarshal(bytes, &holidays)
 	if err != nil {
-		return
+		return err
 	}
 	var holidayModels []model_common.ChinaHoliday
 	for _, holiday := range holidays {
@@ -72,5 +76,5 @@ func SyncHolidays() {
 			Date:         t,
 		})
 	}
-	err = model_common.CChinaHoliday.BatchUpsert(ctx, holidayModels)
+	return model_common.CChinaHoliday.BatchUpsert(ctx, holidayModels)
 }

@@ -7,16 +7,23 @@ import (
 	"sync"
 )
 
-func SendTodoRemind() {
-	ctx := context.Background()
+func init() {
+	jobs = append(jobs, cronJob{
+		Name: "SendTodoRemind",
+		Spec: "@every 20s",
+		Fn:   SendTodoRemind,
+	})
+}
+
+func SendTodoRemind(ctx context.Context) error {
 	records, err := model_todo.CTodoRecord.ListNeedRemindRecords(ctx)
 	if err != nil {
-		return
+		return err
 	}
 	wg := &sync.WaitGroup{}
 	pool, err := utils.NewGoroutinePoolWithPanicHandler(10)
 	if err != nil {
-		return
+		return err
 	}
 	defer pool.Release()
 	for _, record := range records {
@@ -31,4 +38,5 @@ func SendTodoRemind() {
 		}
 	}
 	wg.Wait()
+	return nil
 }
