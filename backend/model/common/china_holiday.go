@@ -24,10 +24,10 @@ type ChinaHoliday struct {
 	DateStr      string        `bson:"dateStr"`
 }
 
-func (*ChinaHoliday) GetNextWorkingDay(ctx context.Context) (ChinaHoliday, error) {
+func (*ChinaHoliday) GetNextWorkingDay(ctx context.Context, from time.Time) (ChinaHoliday, error) {
 	condition := bson.M{
 		"date": bson.M{
-			"$gt": time.Now(),
+			"$gt": from,
 		},
 		"isWorkingDay": true,
 	}
@@ -36,10 +36,10 @@ func (*ChinaHoliday) GetNextWorkingDay(ctx context.Context) (ChinaHoliday, error
 	return result, err
 }
 
-func (*ChinaHoliday) GetNextHoliday(ctx context.Context) (ChinaHoliday, error) {
+func (*ChinaHoliday) GetNextHoliday(ctx context.Context, from time.Time) (ChinaHoliday, error) {
 	condition := bson.M{
 		"date": bson.M{
-			"$gt": time.Now(),
+			"$gt": from,
 		},
 		"isWorkingDay": false,
 	}
