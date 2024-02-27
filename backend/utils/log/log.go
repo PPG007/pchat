@@ -9,6 +9,8 @@ import (
 
 const (
 	traceKey = "backtrace"
+
+	MaxStackSize = 4096
 )
 
 type Fields = logrus.Fields

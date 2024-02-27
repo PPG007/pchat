@@ -101,3 +101,27 @@ func (TodoRecord) MarkAsUndo(ctx context.Context, id bson.ObjectId) error {
 	}
 	return repository.UpdateOne(ctx, C_TODO_RECORD, condition, updater)
 }
+
+func (r TodoRecord) ListNeedRemindRecords(ctx context.Context) ([]TodoRecord, error) {
+	condition := bson.M{
+		"hasBeenReminded": false,
+		"hasBeenDone":     false,
+		"isDeleted":       false,
+		"remindAt": bson.M{
+			"$lte": time.Now(),
+			"$gte": time.Date(2000, time.January, 0, 0, 0, 0, 0, time.Local),
+		},
+	}
+	return r.ListAllByCondition(ctx, condition)
+}
+
+func (r TodoRecord) SendRemindMessage(ctx context.Context) error {
+	// TODO
+	condition := model.GenIdCondition(r.Id)
+	updater := bson.M{
+		"$set": bson.M{
+			"hasBeenReminded": true,
+		},
+	}
+	return repository.UpdateOne(ctx, C_TODO_RECORD, condition, updater)
+}

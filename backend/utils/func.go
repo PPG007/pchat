@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/panjf2000/ants/v2"
 	pb_common "pchat/pb/common"
 	"pchat/repository"
 	"pchat/repository/bson"
@@ -173,4 +174,15 @@ func UppercaseFirst(word string) string {
 	remaining := word[1:]
 	first := strings.ToUpper(string(word[0]))
 	return strings.Join([]string{first, remaining}, "")
+}
+
+func NewGoroutinePoolWithPanicHandler(size int, options ...ants.Option) (*ants.Pool, error) {
+	options = append(options, ants.WithPanicHandler(func(err interface{}) {
+		stack := make([]byte, log.MaxStackSize)
+		stack = stack[:runtime.Stack(stack, false)]
+		log.WarnTrace(context.Background(), "Panic in goroutine", log.Fields{
+			"error": fmt.Sprintf("%v", err),
+		}, stack)
+	}))
+	return ants.NewPool(size, options...)
 }
