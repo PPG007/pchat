@@ -1,5 +1,173 @@
 basePath: /v1
 definitions:
+  admin.PasswordSetting:
+    properties:
+      isEnabled:
+        description: 是否开启密码设置
+        type: boolean
+      maxLength:
+        description: 最大长度
+        type: integer
+      minLength:
+        description: 最小长度
+        type: integer
+      mustHasLowercase:
+        description: 必须包含小写字母
+        type: boolean
+      mustHasNumber:
+        description: 必须包含数字
+        type: boolean
+      mustHasSpecialCode:
+        description: 必须包含特殊字符
+        type: boolean
+      mustHasUppercase:
+        description: 必须包含大写字母
+        type: boolean
+    type: object
+  admin.RegisterSetting:
+    properties:
+      mustBeApprovedBeforeRegister:
+        description: 注册成功前需要审核
+        type: boolean
+    type: object
+  admin.UpdateAIRequest:
+    properties:
+      isEnabled:
+        description: 是否启用
+        type: boolean
+      key:
+        description: 密钥
+        type: string
+      model:
+        description: 模型名称
+        type: string
+      provider:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateAIRequest_AIProvider'
+        description: 服务提供者
+      proxy:
+        description: 代理 URL
+        type: string
+    type: object
+  admin.UpdateAIRequest_AIProvider:
+    enum:
+    - 0
+    type: integer
+    x-enum-varnames:
+    - UpdateAIRequest_OPEN_AI
+  admin.UpdateAccountSettingRequest:
+    properties:
+      password:
+        allOf:
+        - $ref: '#/definitions/admin.PasswordSetting'
+        description: 密码设置
+      register:
+        allOf:
+        - $ref: '#/definitions/admin.RegisterSetting'
+        description: 注册设置
+      tokenKey:
+        description: token 密钥
+        type: string
+      tokenValidSecond:
+        description: token 有效秒数
+        type: integer
+    type: object
+  admin.UpdateChatSettingRequest:
+    properties:
+      allowRollback:
+        description: 允许撤回
+        type: boolean
+      sendEmailIfNotOnline:
+        description: 使用邮箱发送离线消息
+        type: boolean
+      showMessageReadStatus:
+        description: 展示已读信息
+        type: boolean
+    type: object
+  admin.UpdateOSSSettingRequest:
+    properties:
+      accessKey:
+        description: AK
+        type: string
+      endpoint:
+        description: 服务 host
+        type: string
+      privateBucket:
+        description: 私密 bucket
+        type: string
+      provider:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateOSSSettingRequest_OSSProvider'
+        description: 服务提供者
+      publicBucket:
+        description: 公共 bucket
+        type: string
+      secretAccessKey:
+        description: SK
+        type: string
+      validSecond:
+        description: 签发的 URL 有效时间
+        type: integer
+    type: object
+  admin.UpdateOSSSettingRequest_OSSProvider:
+    enum:
+    - 0
+    type: integer
+    x-enum-varnames:
+    - UpdateOSSSettingRequest_MINIO
+  admin.UpdateSMTPSettingRequest:
+    properties:
+      host:
+        description: 服务器地址
+        type: string
+      password:
+        description: 密码
+        type: string
+      port:
+        description: 服务端口
+        type: integer
+      protocol:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateSMTPSettingRequest_Protocol'
+        description: 协议
+      senderName:
+        description: 发送人名称
+        type: string
+      userName:
+        description: 用户名
+        type: string
+    type: object
+  admin.UpdateSMTPSettingRequest_Protocol:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - UpdateSMTPSettingRequest_SMTP
+    - UpdateSMTPSettingRequest_SMTPS
+  admin.UpdateSettingRequest:
+    properties:
+      account:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateAccountSettingRequest'
+        description: 账户设置
+      ai:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateAIRequest'
+        description: ai 设置
+      chat:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateChatSettingRequest'
+        description: chat 设置
+      oss:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateOSSSettingRequest'
+        description: oss 设置
+      smtp:
+        allOf:
+        - $ref: '#/definitions/admin.UpdateSMTPSettingRequest'
+        description: 邮箱设置
+    type: object
   common.BoolValue:
     properties:
       value:
@@ -10,6 +178,8 @@ definitions:
       id:
         description: '@gotags: valid:"required,objectId"'
         type: string
+    type: object
+  common.EmptyResponse:
     type: object
   common.ListCondition:
     properties:
@@ -275,6 +445,27 @@ info:
   title: PChat API
   version: "1.0"
 paths:
+  /admin/setting:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/admin.UpdateSettingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.EmptyResponse'
+      summary: 修改设置
+      tags:
+      - 设置
   /todos:
     post:
       consumes:

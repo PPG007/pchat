@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+package pchat.admin;
+
+option go_package = "pchat/pb/admin";

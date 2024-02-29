@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package pchat.admin;
+
+option go_package = "pchat/pb/admin";
+
+import "common/types.proto";
+
+message UpdateSettingRequest {
+  // 邮箱设置
+  UpdateSMTPSettingRequest smtp = 1;
+  // oss 设置
+  UpdateOSSSettingRequest oss = 2;
+  // ai 设置
+  UpdateAIRequest ai = 3;
+  // chat 设置
+  UpdateChatSettingRequest chat = 4;
+  // 账户设置
+  UpdateAccountSettingRequest account = 5;
+}
+
+message UpdateSMTPSettingRequest {
+  enum Protocol {
+    SMTP = 0;
+    SMTPS = 1;
+  }
+  // 协议
+  Protocol protocol = 1;
+  // 服务器地址
+  string host = 2;
+  // 服务端口
+  int64 port = 3;
+  // 用户名
+  string userName = 4;
+  // 密码
+  string password = 5;
+  // 发送人名称
+  string senderName = 6;
+}
+
+message UpdateOSSSettingRequest {
+  enum OSSProvider {
+    MINIO = 0;
+  }
+  // 服务提供者
+  OSSProvider provider = 1;
+  // AK
+  string accessKey = 2;
+  // SK
+  string secretAccessKey = 3;
+  // 签发的 URL 有效时间
+  int64 validSecond = 4;
+  // 服务 host
+  string endpoint = 5;
+  // 公共 bucket
+  string publicBucket = 6;
+  // 私密 bucket
+  string privateBucket = 7;
+}
+
+message UpdateAIRequest {
+  enum AIProvider {
+    OPEN_AI = 0;
+  }
+  // 服务提供者
+  AIProvider provider = 1;
+  // 代理 URL
+  string proxy = 2;
+  // 是否启用
+  bool isEnabled = 3;
+  // 模型名称
+  string model = 4;
+  // 密钥
+  string key = 5;
+}
+
+message UpdateChatSettingRequest {
+  // 展示已读信息
+  bool showMessageReadStatus = 1;
+  // 允许撤回
+  bool allowRollback = 2;
+  // 使用邮箱发送离线消息
+  bool sendEmailIfNotOnline = 3;
+}
+
+message UpdateAccountSettingRequest {
+  // 密码设置
+  PasswordSetting password = 1;
+  // 注册设置
+  RegisterSetting register = 2;
+  // token 密钥
+  string tokenKey = 3;
+  // token 有效秒数
+  int64 tokenValidSecond = 4;
+}
+
+message PasswordSetting {
+  // 是否开启密码设置
+  bool isEnabled = 1;
+  // 最大长度
+  int64 maxLength = 2;
+  // 最小长度
+  int64 minLength = 3;
+  // 必须包含小写字母
+  bool mustHasLowercase = 4;
+  // 必须包含大写字母
+  bool mustHasUppercase = 5;
+  // 必须包含数字
+  bool mustHasNumber = 6;
+  // 必须包含特殊字符
+  bool mustHasSpecialCode = 7;
+}
+
+message RegisterSetting {
+  // 注册成功前需要审核
+  bool mustBeApprovedBeforeRegister = 1;
+}
