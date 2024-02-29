@@ -3,6 +3,8 @@ common:
   codes:
     - unknown
     - unauthenticated
+    - unsupportedOssProvider
+    - bucketsNotExists
 user:
   prefix: 2000
   codes:
