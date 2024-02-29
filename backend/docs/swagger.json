@@ -101,6 +101,39 @@
                 }
             }
         },
+        "/todos/records/:id": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办管理"
+                ],
+                "summary": "获取一条待办内容",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.DetailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/todo.TodoRecordDetail"
+                        }
+                    }
+                }
+            }
+        },
         "/users/approve": {
             "post": {
                 "consumes": [

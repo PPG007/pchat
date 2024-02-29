@@ -334,6 +334,27 @@ paths:
       summary: 获取待办列表
       tags:
       - 待办管理
+  /todos/records/:id:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/common.DetailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todo.TodoRecordDetail'
+      summary: 获取一条待办内容
+      tags:
+      - 待办管理
   /users/{id}:
     put:
       consumes:
