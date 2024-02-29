@@ -6,48 +6,72 @@
 {
   "_id": "ObjectId",
   "updatedAt": "DateTime",
-  "emailSetting": {
+  "smtp": {
     // 邮件服务地址
-    "server": "String",
+    "host": "String",
     // 邮件服务端口号
     "port": "number",
     // 发件人用户名
     "username": "String",
     // 发件人密码
     "password": "String",
-    // 离线后通过邮箱发送聊天内容
-    "sendEmailIfNotOnline": "Boolean"
+    // 发件人名称
+    "senderName": "String",
+    // 协议，smtp、smtps
+    "protocol": "String",
   },
-  "openAISetting": {
-    // openAI API key
-    "key": "String",
-    // openAI 代理设置
+  "ai": {
+    // 服务提供者，OpenAI
+    "provider": "String",
+    "apiKey": "String",
     "proxy": "String",
-    // 是否启用 OpenAI
-    "isEnabled": "Boolean"
+    "isEnabled": "Boolean",
+    "model": "String"
   },
-  "accessTokenSetting": {
-    // JWT token 密钥
-    "key": "String",
-    // JWT token 有效期
-    "expiredSecond": "number"
+  "account": {
+    // token 有效时间
+    "TokenValidSecond": "Long",
+    // 密码设置
+    "password": {
+      "isEnabled": "Boolean",
+      // 最小长度
+      "minLength": "Long",
+      // 最大长度
+      "maxLength": "Long",
+      // 必须包含小写字母
+      "mustHasLowerCase": "Boolean",
+      // 必须包含大写字母
+      "mustHasUpperCase": "Boolean",
+      // 必须包含数字
+      "mustHasNumber": "Boolean",
+      // 必须包含特殊字符
+      "mustHasSpecialCode": "Boolean",
+    },
+    // 注册设置
+    "register": {
+      // 注册完成前是否需要审核
+      "mustBeApprovedBeforeRegister": "Boolean"
+    }
   },
-  "ossSetting": {
+  "oss": {
     // OSS 服务提供方，支持 minio
     "provider": "String",
-    "bucket": "String",
+    "publicBucket": "String",
+    "privateBucket": "String",
     // 分享链接过期时间
-    "expiredSecond": "number",
-    // oss url
-    "url": "String"
+    "validSecond": "number",
+    "endpoint": "String",
+    "accessKey": "String",
+    "secretAccessKey": "String",
+    
   },
-  "chatSetting": {
+  "chat": {
     // 是否显示消息已读状态
     "showMessageReadStatus": "Boolean",
     // 是否允许撤回消息
     "allowRollback": "Boolean",
-    // 注册完成前是否需要审核
-    "mustBeApprovedBeforeRegister": "Boolean"
+    // 离线后通过邮箱发送聊天内容
+    "sendEmailIfNotOnline": "Boolean",
   }
 }
 ```

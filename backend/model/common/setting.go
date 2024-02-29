@@ -21,45 +21,67 @@ var (
 )
 
 type Setting struct {
-	Id                 bson.ObjectId      `bson:"_id"`
-	UpdatedAt          time.Time          `bson:"updatedAt"`
-	EmailSetting       EmailSetting       `bson:"emailSetting,omitempty"`
-	AccessTokenSetting AccessTokenSetting `bson:"accessTokenSetting,omitempty"`
-	OSSSetting         OSSSetting         `bson:"ossSetting,omitempty"`
-	OpenAISetting      OpenAISetting      `bson:"openAISetting,omitempty"`
-	ChatSetting        ChatSetting        `bson:"chatSetting,omitempty"`
+	Id        bson.ObjectId  `bson:"_id"`
+	UpdatedAt time.Time      `bson:"updatedAt"`
+	SMTP      SMTPSetting    `bson:"smtp,omitempty"`
+	OSS       OSSSetting     `bson:"oss,omitempty"`
+	AI        AISetting      `bson:"ai,omitempty"`
+	Chat      ChatSetting    `bson:"chat,omitempty"`
+	Account   AccountSetting `bson:"account,omitempty"`
 }
 
-type OpenAISetting struct {
-	Key       string `bson:"key"`
+type AISetting struct {
+	Provider  string `bson:"provider"`
 	Proxy     string `bson:"proxy"`
 	IsEnabled bool   `bson:"isEnabled"`
+	Model     string `bson:"model"`
+	Key       string `bson:"key"`
 }
 
-type EmailSetting struct {
-	Server               string `bson:"server"`
-	Port                 int    `bson:"port"`
-	Username             string `bson:"username"`
-	Password             string `bson:"password"`
-	SendEmailIfNotOnline bool   `bson:"sendEmailIfNotOnline"`
+type SMTPSetting struct {
+	Host       string `bson:"host"`
+	Protocol   string `bson:"protocol"`
+	Port       int    `bson:"port"`
+	Username   string `bson:"username"`
+	Password   string `bson:"password"`
+	SenderName string `bson:"senderName"`
 }
 
-type AccessTokenSetting struct {
-	Key           string `bson:"key"`
-	ExpiredSecond int    `bson:"expiredSecond"`
+type AccountSetting struct {
+	Register         RegisterSetting `bson:"register"`
+	Password         PasswordSetting `bson:"password"`
+	TokenValidSecond int64           `bson:"TokenValidSecond"`
+	TokenKey         string          `bson:"tokenKey"`
+}
+
+type PasswordSetting struct {
+	IsEnabled          bool  `bson:"isEnabled"`
+	MinLength          int64 `bson:"minLength"`
+	MaxLength          int64 `bson:"maxLength"`
+	MustHasLowerCase   bool  `bson:"mustHasLowerCase"`
+	MustHasUpperCase   bool  `bson:"mustHasUpperCase"`
+	MustHasNumber      bool  `bson:"mustHasNumber"`
+	MustHasSpecialCode bool  `bson:"mustHasSpecialCode"`
+}
+
+type RegisterSetting struct {
+	MustBeApprovedBeforeRegister bool `bson:"mustBeApprovedBeforeRegister"`
 }
 
 type OSSSetting struct {
-	Provider      string `bson:"provider"`
-	Bucket        string `bson:"bucket"`
-	ExpiredSecond int    `bson:"expiredSecond"`
-	Url           string `bson:"url"`
+	Provider        string `bson:"provider"`
+	PublicBucket    string `bson:"publicBucket"`
+	PrivateBucket   string `bson:"privateBucket"`
+	ValidSecond     int64  `bson:"validSecond"`
+	AccessKey       string `bson:"accessKey"`
+	SecretAccessKey string `bson:"secretAccessKey"`
+	Endpoint        string `bson:"endpoint"`
 }
 
 type ChatSetting struct {
-	ShowMessageReadStatus        bool `bson:"showMessageReadStatus"`
-	AllowRollback                bool `bson:"allowRollback"`
-	MustBeApprovedBeforeRegister bool `bson:"mustBeApprovedBeforeRegister"`
+	ShowMessageReadStatus bool `bson:"showMessageReadStatus"`
+	AllowRollback         bool `bson:"allowRollback"`
+	SendEmailIfNotOnline  bool `bson:"sendEmailIfNotOnline"`
 }
 
 func (s *Setting) CreateDefaultSetting(ctx context.Context) error {
@@ -72,12 +94,12 @@ func (s *Setting) CreateDefaultSetting(ctx context.Context) error {
 		setting := Setting{
 			Id:        bson.NewObjectId(),
 			UpdatedAt: time.Now(),
-			AccessTokenSetting: AccessTokenSetting{
-				Key:           key,
-				ExpiredSecond: DEFAULT_ACCESS_TOKEN_EXPIRED_SECOND,
-			},
-			ChatSetting: ChatSetting{
-				MustBeApprovedBeforeRegister: true,
+			Account: AccountSetting{
+				Register: RegisterSetting{
+					MustBeApprovedBeforeRegister: true,
+				},
+				TokenValidSecond: DEFAULT_ACCESS_TOKEN_EXPIRED_SECOND,
+				TokenKey:         key,
 			},
 		}
 		return repository.Insert(ctx, C_SETTING, setting)
@@ -97,12 +119,12 @@ func (s *Setting) Update(ctx context.Context) error {
 	}
 	updater := bson.M{
 		"$set": bson.M{
-			"updatedAt":          time.Now(),
-			"emailSetting":       s.EmailSetting,
-			"accessTokenSetting": s.AccessTokenSetting,
-			"ossSetting":         s.OSSSetting,
-			"openAISetting":      s.OpenAISetting,
-			"chatSetting":        s.ChatSetting,
+			"updatedAt": time.Now(),
+			"smtp":      s.SMTP,
+			"oss":       s.OSS,
+			"ai":        s.AI,
+			"chat":      s.Chat,
+			"account":   s.Account,
 		},
 	}
 	return repository.UpdateOne(ctx, C_SETTING, condition, updater)

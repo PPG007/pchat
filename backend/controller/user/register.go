@@ -29,12 +29,12 @@ func register(ctx context.Context, req *pb_user.RegisterRequest) (*pb_user.Regis
 	if err != nil {
 		return nil, err
 	}
-	err = model_user.CUser.CreateNew(ctx, req.Email, req.Password, req.Reason, setting.ChatSetting.MustBeApprovedBeforeRegister)
+	err = model_user.CUser.CreateNew(ctx, req.Email, req.Password, req.Reason, setting.Account.Register.MustBeApprovedBeforeRegister)
 	if err != nil {
 		return nil, err
 	}
 
 	return &pb_user.RegisterResponse{
-		NeedAudit: setting.ChatSetting.MustBeApprovedBeforeRegister,
+		NeedAudit: setting.Account.Register.MustBeApprovedBeforeRegister,
 	}, nil
 }

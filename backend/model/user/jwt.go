@@ -59,7 +59,7 @@ func SignToken(ctx context.Context, user User, isAuthorized bool) (string, error
 		CreatedAt: time.Now(),
 		ExpiredAt: func() time.Time {
 			if isAuthorized {
-				return time.Now().Add(time.Second * time.Duration(setting.AccessTokenSetting.ExpiredSecond))
+				return time.Now().Add(time.Second * time.Duration(setting.Account.TokenValidSecond))
 			}
 			return time.Now().Add(time.Minute * 5)
 		}(),
@@ -70,7 +70,7 @@ func SignToken(ctx context.Context, user User, isAuthorized bool) (string, error
 		SessionId:    uuid.NewString(),
 	}
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
-	return t.SignedString(utils.ParseSecretString(setting.AccessTokenSetting.Key))
+	return t.SignedString(utils.ParseSecretString(setting.Account.TokenKey))
 }
 
 func ValidToken(ctx context.Context, token string) (*UserClaim, error) {
@@ -79,7 +79,7 @@ func ValidToken(ctx context.Context, token string) (*UserClaim, error) {
 		if err != nil {
 			return nil, err
 		}
-		return utils.ParseSecretString(setting.AccessTokenSetting.Key), nil
+		return utils.ParseSecretString(setting.Account.TokenKey), nil
 	})
 	if err != nil {
 		return nil, err
