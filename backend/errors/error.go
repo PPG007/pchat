@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"errors"
 	jsoniter "github.com/json-iterator/go"
 	pb_common "pchat/pb/common"
 )
@@ -26,13 +27,17 @@ func New(code int64, message string) *PError {
 }
 
 func ToPError(err error) *PError {
-	pe := PError{}
+	var pe *PError
+	if errors.As(err, &pe) {
+		return pe
+	}
+	pe = &PError{}
 	err = jsoniter.UnmarshalFromString(err.Error(), &pe)
 	if err != nil {
 		pe.Code = ERR_COMMON_UNKNOWN
 		pe.Message = err.Error()
 	}
-	return &pe
+	return pe
 }
 
 func (err *PError) ToCommonError() *pb_common.ErrorResponse {

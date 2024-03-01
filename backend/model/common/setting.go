@@ -18,6 +18,8 @@ const (
 
 var (
 	CSetting = &Setting{}
+
+	cachedSetting *Setting
 )
 
 type Setting struct {
@@ -128,4 +130,19 @@ func (s *Setting) Update(ctx context.Context) error {
 		},
 	}
 	return repository.UpdateOne(ctx, C_SETTING, condition, updater)
+}
+
+func (*Setting) GetWithCache(ctx context.Context) (*Setting, error) {
+	if cachedSetting != nil {
+		return cachedSetting, nil
+	}
+	setting, err := CSetting.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	cachedSetting = &setting
+	time.AfterFunc(time.Minute, func() {
+		cachedSetting = nil
+	})
+	return cachedSetting, nil
 }
