@@ -17,17 +17,44 @@ type Handler[Request, Response proto.Message] func(context.Context, Request) (Re
 type GinController = func(*gin.Context)
 
 type Controller struct {
-	Path    string
-	Method  string
-	Handler func(ctx *gin.Context)
+	Path                   string
+	Method                 string
+	Permission             string
+	NoAuth                 bool
+	AllowUnauthorizedToken bool
+	Handler                func(ctx *gin.Context)
 }
 
-func NewController[Request, Response proto.Message](path, method string, handler Handler[Request, Response]) *Controller {
-	return &Controller{
+type ControllerOption func(c *Controller)
+
+func WithPermission(permission string) ControllerOption {
+	return func(c *Controller) {
+		c.Permission = permission
+	}
+}
+
+func WithNoAuth() ControllerOption {
+	return func(c *Controller) {
+		c.NoAuth = true
+	}
+}
+
+func WithAllowUnauthorizedToken() ControllerOption {
+	return func(c *Controller) {
+		c.AllowUnauthorizedToken = true
+	}
+}
+
+func NewController[Request, Response proto.Message](path, method string, handler Handler[Request, Response], opts ...ControllerOption) *Controller {
+	c := &Controller{
 		Path:    path,
 		Method:  method,
 		Handler: wrapController(handler),
 	}
+	for _, opt := range opts {
+		opt(c)
+	}
+	return c
 }
 
 func newReq[T proto.Message]() T {

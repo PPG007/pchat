@@ -25,6 +25,19 @@ func MergeEngines(main *gin.Engine, subEngines ...*gin.Engine) {
 	}
 }
 
+type MapKeyTypes interface {
+	string | int
+}
+
+func MergeMaps[K MapKeyTypes, V any](main map[K]V, subMaps ...map[K]V) map[K]V {
+	for _, subMap := range subMaps {
+		for k, v := range subMap {
+			main[k] = v
+		}
+	}
+	return main
+}
+
 const (
 	USER_ID_KEY       = "userId"
 	REQUEST_ID_KEY    = "reqId"

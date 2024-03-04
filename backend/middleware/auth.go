@@ -3,26 +3,29 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"pchat/controller"
 	model_user "pchat/model/user"
 	pb_common "pchat/pb/common"
 	"pchat/utils"
 )
 
-var (
-	noAuthPaths = []string{
-		"/users/login",
-		"/users/register",
-		"/users/registerApplications",
+func noAuth(path string) bool {
+	if c := controller.ControllersMap[path]; c != nil {
+		return c.NoAuth
 	}
+	return false
+}
 
-	unauthorizedTokenAvailablePaths = []string{
-		"/users/validOTP",
+func allowUnauthorizedToken(path string) bool {
+	if c := controller.ControllersMap[path]; c != nil {
+		return c.AllowUnauthorizedToken
 	}
-)
+	return false
+}
 
 func auth(ctx *gin.Context) {
 	fullPath := ctx.FullPath()
-	if utils.StrInArray(fullPath, &noAuthPaths) {
+	if noAuth(fullPath) {
 		ctx.Next()
 		return
 	}
@@ -36,7 +39,7 @@ func auth(ctx *gin.Context) {
 	}
 	utils.SetUserId(ctx, userClaim.UserId)
 	if !userClaim.IsAuthorized {
-		if utils.StrInArray(ctx.FullPath(), &unauthorizedTokenAvailablePaths) {
+		if allowUnauthorizedToken(fullPath) {
 			ctx.Next()
 		} else {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, pb_common.EmptyResponse{})
