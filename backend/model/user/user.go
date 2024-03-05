@@ -251,3 +251,14 @@ func (*User) DisableOTP(ctx context.Context, id bson.ObjectId) error {
 	}
 	return repository.UpdateOne(ctx, C_USER, condition, updater)
 }
+
+func (*User) GetPermissions(ctx context.Context, id bson.ObjectId) ([]string, error) {
+	user, err := CUser.GetById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if len(user.Roles) == 0 {
+		return nil, nil
+	}
+	return CRole.GetPermissionsByIds(ctx, user.Roles)
+}

@@ -7,21 +7,24 @@ import (
 )
 
 type Group struct {
-	BasePath string
-	group    *gin.Engine
+	BasePath      string
+	group         *gin.Engine
+	ControllerMap map[string]*Controller
 }
 
 func NewGroup(basePath string) *Group {
 	gin.SetMode(gin.ReleaseMode)
 	return &Group{
-		BasePath: basePath,
-		group:    gin.New(),
+		BasePath:      basePath,
+		group:         gin.New(),
+		ControllerMap: make(map[string]*Controller),
 	}
 }
 
 func (g *Group) Register(controller *Controller) {
 	handler := controller.Handler
 	path := fmt.Sprintf("%s%s", g.BasePath, controller.Path)
+	g.ControllerMap[path] = controller
 	switch controller.Method {
 	case http.MethodGet:
 		g.group.GET(path, handler)

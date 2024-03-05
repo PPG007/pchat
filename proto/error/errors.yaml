@@ -5,6 +5,7 @@ common:
     - unauthenticated
     - unsupportedOssProvider
     - bucketsNotExists
+    - permissionDenied
 user:
   prefix: 2000
   codes:
