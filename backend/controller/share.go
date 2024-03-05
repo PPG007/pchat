@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"log"
+	"pchat/controller/admin"
 	"pchat/controller/core"
 	"pchat/controller/todo"
 	"pchat/controller/user"
@@ -19,6 +20,7 @@ func AppendRoutes(root *gin.Engine, isDebug bool) {
 		user.Group,
 		todo.Group,
 		websocket.Group,
+		admin.Group,
 	}
 	for _, group := range groups {
 		utils.MergeEngines(root, group.Engine())

@@ -8,6 +8,39 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/admin/setting": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设置"
+                ],
+                "summary": "修改设置",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin.UpdateSettingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.EmptyResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/todos": {
             "post": {
                 "consumes": [
@@ -398,6 +431,267 @@
         }
     },
     "definitions": {
+        "admin.PasswordSetting": {
+            "type": "object",
+            "properties": {
+                "isEnabled": {
+                    "description": "是否开启密码设置",
+                    "type": "boolean"
+                },
+                "maxLength": {
+                    "description": "最大长度",
+                    "type": "integer"
+                },
+                "minLength": {
+                    "description": "最小长度",
+                    "type": "integer"
+                },
+                "mustHasLowercase": {
+                    "description": "必须包含小写字母",
+                    "type": "boolean"
+                },
+                "mustHasNumber": {
+                    "description": "必须包含数字",
+                    "type": "boolean"
+                },
+                "mustHasSpecialCode": {
+                    "description": "必须包含特殊字符",
+                    "type": "boolean"
+                },
+                "mustHasUppercase": {
+                    "description": "必须包含大写字母",
+                    "type": "boolean"
+                }
+            }
+        },
+        "admin.RegisterSetting": {
+            "type": "object",
+            "properties": {
+                "mustBeApprovedBeforeRegister": {
+                    "description": "注册成功前需要审核",
+                    "type": "boolean"
+                }
+            }
+        },
+        "admin.UpdateAIRequest": {
+            "type": "object",
+            "properties": {
+                "isEnabled": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "key": {
+                    "description": "密钥",
+                    "type": "string"
+                },
+                "model": {
+                    "description": "模型名称",
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "服务提供者",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateAIRequest_AIProvider"
+                        }
+                    ]
+                },
+                "proxy": {
+                    "description": "代理 URL",
+                    "type": "string"
+                }
+            }
+        },
+        "admin.UpdateAIRequest_AIProvider": {
+            "type": "integer",
+            "enum": [
+                0
+            ],
+            "x-enum-varnames": [
+                "UpdateAIRequest_OPEN_AI"
+            ]
+        },
+        "admin.UpdateAccountSettingRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "description": "密码设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.PasswordSetting"
+                        }
+                    ]
+                },
+                "register": {
+                    "description": "注册设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.RegisterSetting"
+                        }
+                    ]
+                },
+                "tokenKey": {
+                    "description": "token 密钥",
+                    "type": "string"
+                },
+                "tokenValidSecond": {
+                    "description": "token 有效秒数",
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.UpdateChatSettingRequest": {
+            "type": "object",
+            "properties": {
+                "allowRollback": {
+                    "description": "允许撤回",
+                    "type": "boolean"
+                },
+                "sendEmailIfNotOnline": {
+                    "description": "使用邮箱发送离线消息",
+                    "type": "boolean"
+                },
+                "showMessageReadStatus": {
+                    "description": "展示已读信息",
+                    "type": "boolean"
+                }
+            }
+        },
+        "admin.UpdateOSSSettingRequest": {
+            "type": "object",
+            "properties": {
+                "accessKey": {
+                    "description": "AK",
+                    "type": "string"
+                },
+                "endpoint": {
+                    "description": "服务 host",
+                    "type": "string"
+                },
+                "privateBucket": {
+                    "description": "私密 bucket",
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "服务提供者",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateOSSSettingRequest_OSSProvider"
+                        }
+                    ]
+                },
+                "publicBucket": {
+                    "description": "公共 bucket",
+                    "type": "string"
+                },
+                "secretAccessKey": {
+                    "description": "SK",
+                    "type": "string"
+                },
+                "validSecond": {
+                    "description": "签发的 URL 有效时间",
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.UpdateOSSSettingRequest_OSSProvider": {
+            "type": "integer",
+            "enum": [
+                0
+            ],
+            "x-enum-varnames": [
+                "UpdateOSSSettingRequest_MINIO"
+            ]
+        },
+        "admin.UpdateSMTPSettingRequest": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "description": "服务器地址",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string"
+                },
+                "port": {
+                    "description": "服务端口",
+                    "type": "integer"
+                },
+                "protocol": {
+                    "description": "协议",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateSMTPSettingRequest_Protocol"
+                        }
+                    ]
+                },
+                "senderName": {
+                    "description": "发送人名称",
+                    "type": "string"
+                },
+                "userName": {
+                    "description": "用户名",
+                    "type": "string"
+                }
+            }
+        },
+        "admin.UpdateSMTPSettingRequest_Protocol": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "UpdateSMTPSettingRequest_SMTP",
+                "UpdateSMTPSettingRequest_SMTPS"
+            ]
+        },
+        "admin.UpdateSettingRequest": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "description": "账户设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateAccountSettingRequest"
+                        }
+                    ]
+                },
+                "ai": {
+                    "description": "ai 设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateAIRequest"
+                        }
+                    ]
+                },
+                "chat": {
+                    "description": "chat 设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateChatSettingRequest"
+                        }
+                    ]
+                },
+                "oss": {
+                    "description": "oss 设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateOSSSettingRequest"
+                        }
+                    ]
+                },
+                "smtp": {
+                    "description": "邮箱设置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/admin.UpdateSMTPSettingRequest"
+                        }
+                    ]
+                }
+            }
+        },
         "common.BoolValue": {
             "type": "object",
             "properties": {
@@ -414,6 +708,9 @@
                     "type": "string"
                 }
             }
+        },
+        "common.EmptyResponse": {
+            "type": "object"
         },
         "common.ListCondition": {
             "type": "object",
