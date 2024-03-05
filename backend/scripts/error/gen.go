@@ -30,8 +30,9 @@ type ErrorGroup struct {
 }
 
 type Error struct {
-	Code int
-	Name string
+	Code    int
+	Name    string
+	Message string
 }
 
 func main() {
@@ -44,8 +45,9 @@ func main() {
 		var errors []Error
 		for i, code := range definition.Codes {
 			errors = append(errors, Error{
-				Code: cast.ToInt(fmt.Sprintf("%d%03d", definition.Prefix, i)),
-				Name: strings.ToUpper(snaker.CamelToSnake(fmt.Sprintf("err_%s_%s", group, code))),
+				Code:    cast.ToInt(fmt.Sprintf("%d%03d", definition.Prefix, i)),
+				Name:    strings.ToUpper(snaker.CamelToSnake(fmt.Sprintf("err_%s_%s", group, code))),
+				Message: strings.ToLower(strings.Join(strings.Split(snaker.CamelToSnake(code), "_"), " ")),
 			})
 		}
 		groups = append(groups, ErrorGroup{
@@ -79,6 +81,14 @@ const(
 	{{- end}}
 )
 {{end}}
+
+var codeMessageMap = map[int64]string{
+{{- range .Groups}}
+	{{- range .Errors}}
+	{{.Code}}: "{{.Message}}",
+	{{- end}}
+{{- end}}
+}
 `
 
 func genGoFile(groups []ErrorGroup, fileName string) {

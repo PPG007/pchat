@@ -26,6 +26,13 @@ func New(code int64, message string) *PError {
 	}
 }
 
+func NewWithoutMessage(code int64) *PError {
+	return &PError{
+		Code:    code,
+		Message: codeMessageMap[code],
+	}
+}
+
 func ToPError(err error) *PError {
 	var pe *PError
 	if errors.As(err, &pe) {
