@@ -1,0 +1,14 @@
+// Generated file, DO NOT EDIT!
+package permissions
+
+const (
+    {{- range .permissions}}
+    {{getPermissionEnumName .}} = "{{getPermissionStr .}}"
+    {{- end}}
+)
+
+var AllPermissions = []string{
+    {{- range .permissions}}
+    {{getPermissionEnumName .}},
+    {{- end}}
+}

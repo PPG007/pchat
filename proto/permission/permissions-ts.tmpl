@@ -1,0 +1,13 @@
+// Generated file, DO NOT EDIT!
+export enum Permission {
+  {{- range .permissions}}
+  {{getPermissionEnumName .}} = '{{getPermissionStr .}}',
+  {{- end}}
+}
+
+export const fromString = (permission: string) => {
+  if (permission in Permission) {
+    return permission as Permission;
+  }
+  return undefined;
+}
