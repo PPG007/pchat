@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/qiniu/qmgo"
 	"github.com/qiniu/qmgo/options"
 	"os"
@@ -9,6 +10,24 @@ import (
 )
 
 var mongoClient *qmgo.QmgoClient
+
+type Pagination struct {
+	Condition bson.M
+	Page      int64
+	PerPage   int64
+	OrderBy   []string
+}
+
+type IndexField struct {
+	Name string
+	Desc bool
+}
+
+type IndexOption struct {
+	Fields            []IndexField
+	IsUnique          bool
+	PartialExpression bson.M
+}
 
 func init() {
 	ctx := context.Background()
@@ -33,13 +52,6 @@ func Insert(ctx context.Context, collection string, docs ...interface{}) error {
 	return err
 }
 
-type Pagination struct {
-	Condition bson.M
-	Page      int64
-	PerPage   int64
-	OrderBy   []string
-}
-
 func UpdateOne(ctx context.Context, collection string, condition bson.M, updater bson.M) error {
 	return mongoClient.Database.Collection(collection).UpdateOne(ctx, condition, updater)
 }
@@ -60,8 +72,24 @@ func FindAndApply(ctx context.Context, collection string, condition bson.M, chan
 	return mongoClient.Database.Collection(collection).Find(ctx, condition).Apply(change, result)
 }
 
-func CreateIndex(ctx context.Context, collection string, index options.IndexModel) error {
-	return mongoClient.Database.Collection(collection).CreateOneIndex(ctx, index)
+func CreateIndex(ctx context.Context, collection string, index IndexOption) error {
+	model := options.IndexModel{}
+	if index.IsUnique {
+		model.SetUnique(true)
+	}
+	if len(index.PartialExpression) > 0 {
+		model.SetPartialFilterExpression(index.PartialExpression)
+	}
+	var key []string
+	for _, field := range index.Fields {
+		order := ""
+		if field.Desc {
+			order = "-"
+		}
+		key = append(key, fmt.Sprintf("%s%s", order, field.Name))
+	}
+	model.Key = key
+	return mongoClient.Database.Collection(collection).CreateOneIndex(ctx, model)
 }
 
 func FindOneWithSorter(ctx context.Context, collection string, sorter []string, condition bson.M, result interface{}) error {
