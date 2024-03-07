@@ -3,6 +3,7 @@ package admin
 import (
 	"net/http"
 	"pchat/controller/core"
+	"pchat/permissions"
 )
 
 var (
@@ -10,5 +11,5 @@ var (
 )
 
 func init() {
-	Group.Register(core.NewController("/setting", http.MethodPut, updateSetting))
+	Group.Register(core.NewController("/setting", http.MethodPut, updateSetting, core.WithPermission(permissions.SETTING_EDIT)))
 }

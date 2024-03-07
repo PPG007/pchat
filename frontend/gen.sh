@@ -15,3 +15,4 @@ protoc \
   ${SRC_DIR}/**/*.proto
 
 ../backend/scripts/error/gen
+../backend/scripts/permission/gen
