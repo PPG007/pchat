@@ -12,6 +12,7 @@ import (
 	"pchat/repository"
 	"pchat/repository/bson"
 	"pchat/utils"
+	"pchat/utils/env"
 	"time"
 )
 
@@ -179,7 +180,7 @@ func (*User) Enable2FA(ctx context.Context, id bson.ObjectId) (string, []string,
 	return gotp.NewTOTP(
 		gotp.WithSecret(rawSecret),
 		gotp.WithLabel(user.Email),
-		gotp.WithIssuer(utils.AppName()),
+		gotp.WithIssuer(env.GetAppName()),
 	).SignURL(), codes, nil
 }
 

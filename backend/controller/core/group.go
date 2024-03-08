@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"reflect"
+	"runtime"
 )
 
 type Group struct {
@@ -23,6 +25,9 @@ func NewGroup(basePath string) *Group {
 
 func (g *Group) Register(controller *Controller) {
 	handler := controller.Handler
+	if controller.HandlerName == "" {
+		controller.HandlerName = runtime.FuncForPC(reflect.ValueOf(controller.Handler).Pointer()).Name()
+	}
 	path := fmt.Sprintf("%s%s", g.BasePath, controller.Path)
 	g.ControllerMap[path] = controller
 	switch controller.Method {

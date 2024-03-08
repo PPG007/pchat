@@ -10,6 +10,8 @@ import (
 	"io"
 	"net/http"
 	"pchat/utils"
+	"reflect"
+	"runtime"
 )
 
 type Handler[Request, Response proto.Message] func(context.Context, Request) (Response, error)
@@ -23,6 +25,7 @@ type Controller struct {
 	NoAuth                 bool
 	AllowUnauthorizedToken bool
 	Handler                func(ctx *gin.Context)
+	HandlerName            string
 }
 
 type ControllerOption func(c *Controller)
@@ -47,9 +50,10 @@ func WithAllowUnauthorizedToken() ControllerOption {
 
 func NewController[Request, Response proto.Message](path, method string, handler Handler[Request, Response], opts ...ControllerOption) *Controller {
 	c := &Controller{
-		Path:    path,
-		Method:  method,
-		Handler: wrapController(handler),
+		Path:        path,
+		Method:      method,
+		Handler:     wrapController(handler),
+		HandlerName: runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name(),
 	}
 	for _, opt := range opts {
 		opt(c)

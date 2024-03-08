@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/sirupsen/logrus"
 	"os"
+	"pchat/utils/env"
 	"time"
 )
 
@@ -16,10 +17,15 @@ const (
 type Fields = logrus.Fields
 
 func init() {
-	logrus.SetFormatter(&logrus.JSONFormatter{
+	logrus.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat: time.RFC3339,
-		PrettyPrint:     true,
+		ForceColors:     true,
+		FullTimestamp:   true,
 	})
+	logrus.SetLevel(logrus.WarnLevel)
+	if env.IsDebug() {
+		logrus.SetLevel(logrus.InfoLevel)
+	}
 	logrus.SetOutput(os.Stdout)
 }
 
