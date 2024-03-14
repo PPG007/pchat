@@ -9,7 +9,7 @@ var Group = core.NewGroup("/ws")
 
 func init() {
 	Group.Register(&core.Controller{
-		Path:    "/chat",
+		Path:    "",
 		Method:  http.MethodGet,
 		Handler: ChatHandler,
 	})

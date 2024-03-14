@@ -26,9 +26,7 @@ func (*Permission) Init(ctx context.Context) error {
 			"name": permission,
 		}
 		updater := bson.M{
-			"$set": bson.M{
-				"name": permission,
-			},
+			"name": permission,
 		}
 		if err := repository.Upsert(ctx, C_PERMISSION, condition, updater); err != nil {
 			return err

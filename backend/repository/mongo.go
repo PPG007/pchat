@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/qiniu/qmgo"
 	"github.com/qiniu/qmgo/options"
+	mgo_options "go.mongodb.org/mongo-driver/mongo/options"
 	"os"
 	"pchat/repository/bson"
 )
@@ -73,13 +74,6 @@ func FindAndApply(ctx context.Context, collection string, condition bson.M, chan
 }
 
 func CreateIndex(ctx context.Context, collection string, index IndexOption) error {
-	model := options.IndexModel{}
-	if index.IsUnique {
-		model.SetUnique(true)
-	}
-	if len(index.PartialExpression) > 0 {
-		model.SetPartialFilterExpression(index.PartialExpression)
-	}
 	var key []string
 	for _, field := range index.Fields {
 		order := ""
@@ -88,7 +82,17 @@ func CreateIndex(ctx context.Context, collection string, index IndexOption) erro
 		}
 		key = append(key, fmt.Sprintf("%s%s", order, field.Name))
 	}
-	model.Key = key
+	opts := mgo_options.Index()
+	if index.IsUnique {
+		opts.SetUnique(true)
+	}
+	if len(index.PartialExpression) > 0 {
+		opts.SetPartialFilterExpression(index.PartialExpression)
+	}
+	model := options.IndexModel{
+		Key:          key,
+		IndexOptions: opts,
+	}
 	return mongoClient.Database.Collection(collection).CreateOneIndex(ctx, model)
 }
 
