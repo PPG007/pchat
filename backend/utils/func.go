@@ -116,18 +116,30 @@ func FormatPagination(condition bson.M, listCondition *pb_common.ListCondition) 
 	}
 }
 
-func GO(ctx context.Context, fn func()) {
+func GO(ctx context.Context, fn func(ctx context.Context)) {
+	copiedCtx := CopyContext(ctx)
 	go func() {
 		if r := recover(); r != nil {
 			stack := make([]byte, 4096)
 			stack = stack[:runtime.Stack(stack, false)]
 			err := fmt.Sprintf("%v", r)
-			log.ErrorTrace(ctx, "Panic in Goroutine", log.Fields{
+			log.ErrorTrace(copiedCtx, "Panic in Goroutine", log.Fields{
 				"error": err,
 			}, stack)
 		}
-		fn()
+		fn(copiedCtx)
 	}()
+}
+
+func CopyContext(ctx context.Context) context.Context {
+	copiedCtx := context.Background()
+	if userId := GetUserId(ctx); userId != "" {
+		copiedCtx = context.WithValue(copiedCtx, USER_ID_KEY, userId)
+	}
+	if reqId := GetRequestId(ctx); reqId != "" {
+		copiedCtx = context.WithValue(copiedCtx, REQUEST_ID_KEY, reqId)
+	}
+	return copiedCtx
 }
 
 func MarshalInterfaceToString(obj interface{}) string {

@@ -4,6 +4,16 @@ package pchat.chat;
 
 option go_package = "pchat/pb/chat";
 
+enum MessageType {
+  HEARTBEAT = 0;
+}
+
+message Message {
+  MessageType type = 1;
+  string clientId = 2;
+  HeartbeatMessage heartbeat = 50;
+}
+
 message NewMessage {
   string id = 1;
   string replyTo = 2;
@@ -31,4 +41,8 @@ message MessageDetail {
   string createdAt = 11;
   bool hasBeenEdited = 12;
   repeated string responseEmojis = 13;
+}
+
+message HeartbeatMessage {
+  string time = 1;
 }
