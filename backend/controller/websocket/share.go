@@ -11,6 +11,7 @@ func init() {
 	Group.Register(&core.Controller{
 		Path:    "",
 		Method:  http.MethodGet,
-		Handler: ChatHandler,
+		Handler: core.WrapWSHandler(basic),
+		NoAuth:  true,
 	})
 }

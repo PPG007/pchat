@@ -194,9 +194,9 @@ func (user *User) VerifyOTP(ctx context.Context, input string) (bool, error) {
 			return false, err
 		}
 		if len(user.RecoveryCodes) == 1 {
-			utils.GO(ctx, func() {
+			utils.GO(ctx, func(innerCtx context.Context) {
 				// TODO: send notification
-				user.GenerateRecoveryCodes(ctx, user.Id, true)
+				user.GenerateRecoveryCodes(innerCtx, user.Id, true)
 			})
 		}
 		return true, nil
