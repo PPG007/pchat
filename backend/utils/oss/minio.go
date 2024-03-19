@@ -115,6 +115,32 @@ func (m *minioOSSClient) SignPutObjectURL(ctx context.Context, key string, expir
 	return u.String(), nil
 }
 
+func (m *minioOSSClient) SignPostPolicyURL(ctx context.Context, key string, option PostPolicyOption) error {
+	policy := minio.NewPostPolicy()
+	if err := policy.SetBucket(m.bucketName); err != nil {
+		return err
+	}
+	if err := policy.SetKey(key); err != nil {
+		return err
+	}
+	if option.Size != nil {
+		if err := policy.SetContentLengthRange(option.Size.Min, option.Size.Max); err != nil {
+			return err
+		}
+	}
+	if option.ExpireDuration != nil {
+		if err := policy.SetExpires(time.Now().Add(*option.ExpireDuration)); err != nil {
+			return err
+		}
+	}
+	_, _, err := m.client.PresignedPostPolicy(ctx, policy)
+	if err != nil {
+		return err
+	}
+	// TODO:
+	return nil
+}
+
 func newMinioOSSClient(ctx context.Context, setting model_common.OSSSetting) (*minioOSSClient, error) {
 	u, err := url.Parse(setting.Endpoint)
 	if err != nil {

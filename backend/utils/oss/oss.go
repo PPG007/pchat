@@ -12,6 +12,16 @@ type ObjectMetaInfo struct {
 	UpdatedAt time.Time
 }
 
+type PostPolicyOption struct {
+	Size           *ObjectSizeRange
+	ExpireDuration *time.Duration
+}
+
+type ObjectSizeRange struct {
+	Min int64
+	Max int64
+}
+
 type IOSS interface {
 	SetBucket(ctx context.Context, bucketName string) error
 	GetObject(ctx context.Context, key, filePath string) error
@@ -25,14 +35,10 @@ type IOSS interface {
 	SignPutObjectURL(ctx context.Context, key string, expireDuration time.Duration) (string, error)
 }
 
-func GetOSSProvider(ctx context.Context) (IOSS, error) {
-	setting, err := model_common.CSetting.GetWithCache(ctx)
-	if err != nil {
-		return nil, err
-	}
-	switch setting.OSS.Provider {
+func GetOSSClient(ctx context.Context, setting model_common.OSSSetting) (IOSS, error) {
+	switch setting.Provider {
 	case "minio":
-		return newMinioOSSClient(ctx, setting.OSS)
+		return newMinioOSSClient(ctx, setting)
 	default:
 		return nil, errors.New(errors.ERR_COMMON_UNSUPPORTED_OSS_PROVIDER, "unsupported oss provider")
 	}

@@ -41,6 +41,39 @@
                 }
             }
         },
+        "/common/putObjectURL": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用"
+                ],
+                "summary": "获取上传到 oss 的链接",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.GetPutObjectURLRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.GetPutObjectURLResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/todos": {
             "post": {
                 "consumes": [
@@ -711,6 +744,31 @@
         },
         "common.EmptyResponse": {
             "type": "object"
+        },
+        "common.GetPutObjectURLRequest": {
+            "type": "object",
+            "properties": {
+                "isPrivate": {
+                    "description": "是否私有",
+                    "type": "boolean"
+                },
+                "key": {
+                    "description": "文件名",
+                    "type": "string"
+                },
+                "validSecond": {
+                    "description": "有效时间",
+                    "type": "integer"
+                }
+            }
+        },
+        "common.GetPutObjectURLResponse": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
         },
         "common.ListCondition": {
             "type": "object",

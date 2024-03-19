@@ -20,3 +20,12 @@ message EmptyRequest {
 message DetailRequest {
   string id = 1; // @gotags: valid:"required,objectId"
 }
+
+message GetPutObjectURLRequest {
+  // 文件名
+  string key = 1; // @gotags: valid:"required"
+  // 是否私有
+  bool isPrivate = 2;
+  // 有效时间
+  int64 validSecond = 3;
+}

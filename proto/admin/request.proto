@@ -4,8 +4,6 @@ package pchat.admin;
 
 option go_package = "pchat/pb/admin";
 
-import "common/types.proto";
-
 message UpdateSettingRequest {
   // 邮箱设置
   UpdateSMTPSettingRequest smtp = 1;

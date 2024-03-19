@@ -181,6 +181,23 @@ definitions:
     type: object
   common.EmptyResponse:
     type: object
+  common.GetPutObjectURLRequest:
+    properties:
+      isPrivate:
+        description: 是否私有
+        type: boolean
+      key:
+        description: 文件名
+        type: string
+      validSecond:
+        description: 有效时间
+        type: integer
+    type: object
+  common.GetPutObjectURLResponse:
+    properties:
+      url:
+        type: string
+    type: object
   common.ListCondition:
     properties:
       orderBy:
@@ -466,6 +483,27 @@ paths:
       summary: 修改设置
       tags:
       - 设置
+  /common/putObjectURL:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/common.GetPutObjectURLRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.GetPutObjectURLResponse'
+      summary: 获取上传到 oss 的链接
+      tags:
+      - 通用
   /todos:
     post:
       consumes:

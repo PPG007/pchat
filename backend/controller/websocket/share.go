@@ -12,6 +12,6 @@ func init() {
 		Path:    "",
 		Method:  http.MethodGet,
 		Handler: core.WrapWSHandler(basic),
-		NoAuth:  true,
+		NoAuth:  false,
 	})
 }

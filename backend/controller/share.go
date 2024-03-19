@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pchat/controller/admin"
+	"pchat/controller/common"
 	"pchat/controller/core"
 	"pchat/controller/todo"
 	"pchat/controller/user"
@@ -24,6 +25,7 @@ func AppendRoutes(root *gin.Engine) {
 		todo.Group,
 		websocket.Group,
 		admin.Group,
+		common.Group,
 	}
 	for _, group := range groups {
 		utils.MergeEngines(root, group.Engine())
