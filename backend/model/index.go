@@ -2,12 +2,14 @@ package model
 
 import (
 	"context"
+	"pchat/model/chat"
+	"pchat/model/user"
 	"pchat/repository"
 )
 
 var (
 	indexes = map[string][]repository.IndexOption{
-		"permission": {
+		user.C_PERMISSION: {
 			{
 				Fields: []repository.IndexField{
 					{
@@ -17,6 +19,21 @@ var (
 				},
 				IsUnique:          true,
 				PartialExpression: nil,
+			},
+		},
+		chat.C_CHAT_MEMBER: {
+			{
+				Fields: []repository.IndexField{
+					{
+						Name: "userId",
+						Desc: false,
+					},
+					{
+						Name: "chatId",
+						Desc: false,
+					},
+				},
+				IsUnique: true,
 			},
 		},
 	}

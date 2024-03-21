@@ -157,7 +157,23 @@
     createdAt: "Date",
     sender: "ObjectId",
     content: "String"
-  }
+  },
+  readOnly: "Boolean",
+  name: 'String',
+  createdBy: 'ObjectId',
+}
+```
+
+## chatMember
+
+```json5
+{
+  _id: 'ObjectId',
+  createdAt: 'DateTime',
+  updatedAt: 'DateTime',
+  userId: 'ObjectId',
+  chatId: 'ObjectId',
+  role: 'String',
 }
 ```
 
