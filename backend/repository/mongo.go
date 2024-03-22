@@ -205,3 +205,7 @@ func Aggregate(ctx context.Context, collection string, pipeline []bson.M, result
 	col := mongoClient.Database.Collection(collection)
 	return col.Aggregate(ctx, pipeline).All(&result)
 }
+
+func Distinct(ctx context.Context, collection string, condition bson.M, key string, result interface{}) error {
+	return mongoClient.Database.Collection(collection).Find(ctx, condition).Distinct(key, &result)
+}
