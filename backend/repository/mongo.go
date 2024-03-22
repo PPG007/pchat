@@ -137,7 +137,91 @@ func Transaction(ctx context.Context, fn func(context.Context) error) error {
 	return err
 }
 
+type BatchUpdater struct {
+	Condition bson.M
+	Updater   bson.M
+}
+
+func BatchUpdate(ctx context.Context, collection string, updater ...BatchUpdater) error {
+	bulk := mongoClient.Database.Collection(collection).Bulk()
+	for _, batchUpdater := range updater {
+		bulk = bulk.UpdateOne(batchUpdater.Condition, batchUpdater.Updater)
+	}
+	_, err := bulk.Run(ctx)
+	return err
+}
+
+func BatchUpdateUnOrdered(ctx context.Context, collection string, updater ...BatchUpdater) error {
+	bulk := mongoClient.Database.Collection(collection).Bulk().SetOrdered(false)
+	for _, batchUpdater := range updater {
+		bulk = bulk.UpdateOne(batchUpdater.Condition, batchUpdater.Updater)
+	}
+	_, err := bulk.Run(ctx)
+	return err
+}
+
+func BatchUpsert(ctx context.Context, collection string, updater ...BatchUpdater) error {
+	bulk := mongoClient.Database.Collection(collection).Bulk()
+	for _, batchUpdater := range updater {
+		bulk = bulk.UpsertOne(batchUpdater.Condition, batchUpdater.Updater)
+	}
+	_, err := bulk.Run(ctx)
+	return err
+}
+
+func BatchUpsertUnOrdered(ctx context.Context, collection string, updater ...BatchUpdater) error {
+	bulk := mongoClient.Database.Collection(collection).Bulk().SetOrdered(false)
+	for _, batchUpdater := range updater {
+		bulk = bulk.UpsertOne(batchUpdater.Condition, batchUpdater.Updater)
+	}
+	_, err := bulk.Run(ctx)
+	return err
+}
+
+func BatchInsert(ctx context.Context, collection string, docs ...interface{}) error {
+	bulk := mongoClient.Database.Collection(collection).Bulk()
+	for _, doc := range docs {
+		bulk = bulk.InsertOne(doc)
+	}
+	_, err := bulk.Run(ctx)
+	return err
+}
+
+func BatchInsertUnOrdered(ctx context.Context, collection string, docs ...interface{}) error {
+	bulk := mongoClient.Database.Collection(collection).Bulk().SetOrdered(false)
+	for _, doc := range docs {
+		bulk = bulk.InsertOne(doc)
+	}
+	_, err := bulk.Run(ctx)
+	return err
+}
+
 func Upsert(ctx context.Context, collection string, condition, updater bson.M) error {
 	_, err := mongoClient.Database.Collection(collection).Upsert(ctx, condition, updater)
 	return err
+}
+
+func Aggregate(ctx context.Context, collection string, pipeline []bson.M, result interface{}) error {
+	col := mongoClient.Database.Collection(collection)
+	return col.Aggregate(ctx, pipeline).All(&result)
+}
+
+func Distinct(ctx context.Context, collection string, condition bson.M, key string, result interface{}) error {
+	return mongoClient.Database.Collection(collection).Find(ctx, condition).Distinct(key, &result)
+}
+
+func Iterate(ctx context.Context, collection string, condition bson.M, batchSize int64, sorter []string, fields bson.M) (qmgo.CursorI, error) {
+	cursor := mongoClient.
+		Database.
+		Collection(collection).
+		Find(ctx, condition).
+		BatchSize(batchSize).
+		NoCursorTimeout(true).
+		Sort(sorter...).
+		Select(fields).Cursor()
+	err := cursor.Err()
+	if err != nil {
+		return nil, err
+	}
+	return cursor, nil
 }
