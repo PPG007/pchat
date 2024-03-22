@@ -209,3 +209,19 @@ func Aggregate(ctx context.Context, collection string, pipeline []bson.M, result
 func Distinct(ctx context.Context, collection string, condition bson.M, key string, result interface{}) error {
 	return mongoClient.Database.Collection(collection).Find(ctx, condition).Distinct(key, &result)
 }
+
+func Iterate(ctx context.Context, collection string, condition bson.M, batchSize int64, sorter []string, fields bson.M) (qmgo.CursorI, error) {
+	cursor := mongoClient.
+		Database.
+		Collection(collection).
+		Find(ctx, condition).
+		BatchSize(batchSize).
+		NoCursorTimeout(true).
+		Sort(sorter...).
+		Select(fields).Cursor()
+	err := cursor.Err()
+	if err != nil {
+		return nil, err
+	}
+	return cursor, nil
+}
