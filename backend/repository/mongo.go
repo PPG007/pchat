@@ -125,6 +125,18 @@ func FindAllWithPage(ctx context.Context, collection string, pagination Paginati
 	return col.Find(ctx, pagination.Condition).Count()
 }
 
+func Transaction(ctx context.Context, fn func(context.Context) error) error {
+	session, err := mongoClient.Session()
+	if err != nil {
+		return err
+	}
+	defer session.EndSession(ctx)
+	_, err = session.StartTransaction(ctx, func(sessCtx context.Context) (interface{}, error) {
+		return nil, fn(sessCtx)
+	})
+	return err
+}
+
 func Upsert(ctx context.Context, collection string, condition, updater bson.M) error {
 	_, err := mongoClient.Database.Collection(collection).Upsert(ctx, condition, updater)
 	return err
