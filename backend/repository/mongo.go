@@ -200,3 +200,8 @@ func Upsert(ctx context.Context, collection string, condition, updater bson.M) e
 	_, err := mongoClient.Database.Collection(collection).Upsert(ctx, condition, updater)
 	return err
 }
+
+func Aggregate(ctx context.Context, collection string, pipeline []bson.M, result interface{}) error {
+	col := mongoClient.Database.Collection(collection)
+	return col.Aggregate(ctx, pipeline).All(&result)
+}
